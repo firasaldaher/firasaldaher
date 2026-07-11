@@ -24,6 +24,10 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
+          security: loose
+          timeout: 60000
           # بما أن حساب الـ FTP الخاص بك يوجه مباشرة لمجلد المشروع، سنتركه كمسار رئيسي
           server-dir: ./
           # ملفات لا تريد رفعها للسيرفر
