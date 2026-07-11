@@ -8,58 +8,38 @@ try {
   $db = $database->getConnection();
 
   if ($db) {
-    // Appointments stats
-    $stmt1 = $db->query("SELECT COUNT(*) as total FROM appointments");
-    $totalAppts = $stmt1->fetch(PDO::FETCH_ASSOC)['total'];
+    // Today's Orders
+    $stmt1 = $db->query("SELECT COUNT(*) as total FROM orders WHERE DATE(created_at) = CURDATE()");
+    $todayOrders = $stmt1->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
-    $stmt2 = $db->query("SELECT COUNT(*) as total FROM appointments WHERE status = 'pending'");
-    $pendingAppts = $stmt2->fetch(PDO::FETCH_ASSOC)['total'];
+    // Today's Revenue
+    $stmt2 = $db->query("SELECT COALESCE(SUM(total_amount), 0) as total FROM orders WHERE DATE(created_at) = CURDATE() AND status = 'completed'");
+    $todayRevenue = $stmt2->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
-    $stmt3 = $db->query("SELECT * FROM appointments ORDER BY created_at DESC LIMIT 5");
-    $recentAppts = $stmt3->fetchAll(PDO::FETCH_ASSOC);
+    // Total Products
+    $stmt3 = $db->query("SELECT COUNT(*) as total FROM products");
+    $totalProducts = $stmt3->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
-    $stmt4 = $db->query("SELECT COUNT(*) as total FROM appointments WHERE status = 'completed'");
-    $completedAppts = $stmt4->fetch(PDO::FETCH_ASSOC)['total'];
+    // Low Stock Items
+    $stmt4 = $db->query("SELECT COUNT(*) as total FROM inventory WHERE quantity <= low_stock_threshold");
+    $lowStock = $stmt4->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
-    // Clients
-    $stmtC = $db->query("SELECT COUNT(*) as total FROM clients");
-    $totalClients = $stmtC->fetch(PDO::FETCH_ASSOC)['total'];
+    // Today's Expenses
+    $stmt5 = $db->query("SELECT COALESCE(SUM(amount), 0) as total FROM expenses WHERE DATE(created_at) = CURDATE()");
+    $todayExpenses = $stmt5->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
-    // Active staff
-    $stmtS = $db->query("SELECT COUNT(*) as total FROM staff WHERE is_active = 1");
-    $activeStaff = $stmtS->fetch(PDO::FETCH_ASSOC)['total'];
-
-    // Ecommerce orders
-    $stmtO = $db->query("SELECT COUNT(*) as total FROM ecommerce_orders WHERE status = 'pending'");
-    $pendingOrders = $stmtO->fetch(PDO::FETCH_ASSOC)['total'];
-
-    // Academy enrollments
-    $stmtA = $db->query("SELECT COUNT(*) as total FROM academy_enrollments WHERE status = 'pending'");
-    $pendingEnrollments = $stmtA->fetch(PDO::FETCH_ASSOC)['total'];
-
-    // Revenue estimate (avg $65/completed appointment)
-    $revenue = $completedAppts * 65;
-
-    // Weekly bookings (last 7 days)
-    $stmtW = $db->query("SELECT COUNT(*) as total FROM appointments WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
-    $weeklyBookings = $stmtW->fetch(PDO::FETCH_ASSOC)['total'];
-
-    // Loyalty: total points distributed
-    $stmtL = $db->query("SELECT COALESCE(SUM(points), 0) as total FROM clients");
-    $totalPoints = $stmtL->fetch(PDO::FETCH_ASSOC)['total'];
+    try {
+        $recentOrders = $db->query("SELECT * FROM orders ORDER BY created_at DESC LIMIT 5")->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) { $recentOrders = []; }
 
   } else {
-    $totalAppts = $pendingAppts = $completedAppts = $revenue = 0;
-    $totalClients = $activeStaff = $pendingOrders = $pendingEnrollments = 0;
-    $weeklyBookings = $totalPoints = 0;
-    $recentAppts = [];
+    $todayOrders = $todayRevenue = $totalProducts = $lowStock = $todayExpenses = 0;
+    $recentOrders = [];
     $error = "Database connection failed.";
   }
 } catch (PDOException $e) {
-  $totalAppts = $pendingAppts = $completedAppts = $revenue = 0;
-  $totalClients = $activeStaff = $pendingOrders = $pendingEnrollments = 0;
-  $weeklyBookings = $totalPoints = 0;
-  $recentAppts = [];
+  $todayOrders = $todayRevenue = $totalProducts = $lowStock = $todayExpenses = 0;
+  $recentOrders = [];
   $error = "DB Error: " . $e->getMessage();
 }
 ?>
@@ -113,40 +93,29 @@ try {
       <!-- Stats Grid -->
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-card-title">Total Appointments</div>
-          <div class="stat-card-value"><?php echo $totalAppts; ?></div>
-          <div class="stat-card-trend trend-up">All Time</div>
+          <div class="stat-card-title">Today's Orders</div>
+          <div class="stat-card-value"><?php echo $todayOrders; ?></div>
+          <div class="stat-card-trend trend-up">Today</div>
         </div>
         <div class="stat-card">
-          <div class="stat-card-title">Estimated Revenue</div>
-          <div class="stat-card-value">$<?php echo number_format($revenue); ?></div>
-          <div class="stat-card-trend trend-up">From Completed</div>
+          <div class="stat-card-title">Today's Revenue</div>
+          <div class="stat-card-value">$<?php echo number_format($todayRevenue, 2); ?></div>
+          <div class="stat-card-trend trend-up">Today</div>
         </div>
         <div class="stat-card">
-          <div class="stat-card-title">Pending Bookings</div>
-          <div class="stat-card-value"><?php echo $pendingAppts; ?></div>
-          <div class="stat-card-trend trend-down">Needs Attention</div>
+          <div class="stat-card-title">Today's Expenses</div>
+          <div class="stat-card-value">$<?php echo number_format($todayExpenses, 2); ?></div>
+          <div class="stat-card-trend trend-down">Today</div>
         </div>
         <div class="stat-card">
-          <div class="stat-card-title">Registered Clients</div>
-          <div class="stat-card-value"><?php echo $totalClients; ?></div>
-          <div class="stat-card-trend trend-up">Active Members</div>
+          <div class="stat-card-title">Total Menu Items</div>
+          <div class="stat-card-value"><?php echo $totalProducts; ?></div>
+          <div class="stat-card-trend trend-up">Active Products</div>
         </div>
         <div class="stat-card">
-          <div class="stat-card-title">This Week</div>
-          <div class="stat-card-value"><?php echo $weeklyBookings; ?></div>
-          <div class="stat-card-trend trend-up">Last 7 Days</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-title">Pending Orders</div>
-          <div class="stat-card-value"><?php echo $pendingOrders; ?></div>
-          <div class="stat-card-trend <?php echo $pendingOrders > 0 ? 'trend-down' : 'trend-up'; ?>">E-commerce</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-title">Academy Apps</div>
-          <div class="stat-card-value"><?php echo $pendingEnrollments; ?></div>
-          <div class="stat-card-trend <?php echo $pendingEnrollments > 0 ? 'trend-down' : 'trend-up'; ?>">Pending Review
-          </div>
+          <div class="stat-card-title">Low Stock Alerts</div>
+          <div class="stat-card-value"><?php echo $lowStock; ?></div>
+          <div class="stat-card-trend <?php echo $lowStock > 0 ? 'trend-down' : 'trend-up'; ?>">Inventory</div>
         </div>
       </div>
 
@@ -299,45 +268,43 @@ try {
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-            Recent Appointments
+            Recent Orders
           </div>
-          <a href="appointments/" class="btn btn-outline">View All</a>
+          <a href="orders/" class="btn btn-outline">View All</a>
         </div>
         <table class="data-table">
           <thead>
             <tr>
-              <th>Client Name</th>
-              <th>Service</th>
+              <th>Order ID</th>
+              <th>Total Amount</th>
               <th>Date & Time</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            <?php if (count($recentAppts) > 0): ?>
-              <?php foreach ($recentAppts as $appt): ?>
+            <?php if (count($recentOrders) > 0): ?>
+              <?php foreach ($recentOrders as $order): ?>
                 <tr>
-                  <td><?php echo htmlspecialchars($appt['client_name']); ?></td>
-                  <td><?php echo htmlspecialchars($appt['service']); ?></td>
+                  <td>#<?php echo htmlspecialchars($order['id']); ?></td>
+                  <td>$<?php echo number_format($order['total_amount'], 2); ?></td>
                   <td>
-                    <?php echo date('M d, Y', strtotime($appt['appointment_date'])) . ' ' . date('h:i A', strtotime($appt['appointment_time'])); ?>
+                    <?php echo date('M d, Y h:i A', strtotime($order['created_at'])); ?>
                   </td>
                   <td>
                     <?php
                     $status_class = 'badge-warning';
-                    if ($appt['status'] === 'confirmed')
+                    if ($order['status'] === 'completed')
                       $status_class = 'badge-success';
-                    if ($appt['status'] === 'cancelled')
+                    if ($order['status'] === 'cancelled')
                       $status_class = 'badge-danger';
-                    if ($appt['status'] === 'completed')
-                      $status_class = 'badge-success';
                     ?>
-                    <span class="badge <?php echo $status_class; ?>"><?php echo ucfirst($appt['status']); ?></span>
+                    <span class="badge <?php echo $status_class; ?>"><?php echo ucfirst($order['status']); ?></span>
                   </td>
                 </tr>
               <?php endforeach; ?>
             <?php else: ?>
               <tr>
-                <td colspan="4" style="text-align: center; padding: 20px;">No recent appointments.</td>
+                <td colspan="4" style="text-align: center; padding: 20px;">No recent orders.</td>
               </tr>
             <?php endif; ?>
           </tbody>
