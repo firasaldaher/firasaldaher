@@ -1,0 +1,50 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+  # يسمح لك بتشغيل السكربت يدوياً من GitHub
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+      
+      # خيار 1: الرفع باستخدام FTP (الأكثر شيوعاً)
+      # تأكد من إضافة هذه المتغيرات في GitHub Secrets (Settings -> Secrets and variables -> Actions)
+      - name: 📂 Sync files via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # إذا كان موقعك داخل مجلد معين (مثل public_html) ضعه هنا، وإلا اتركه فارغاً
+          server-dir: /public_html/
+          # ملفات لا تريد رفعها للسيرفر
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            database.sql
+            README.md
+
+      # ---------------------------------------------------------
+      # خيار 2: الرفع باستخدام SSH/Rsync (للسيرفرات الخاصة VPS)
+      # إذا كان السيرفر الخاص بك يعمل بـ SSH، قم بإلغاء تفعيل (FTP) بالأعلى، واحذف علامة # من الأسطر التالية:
+      # ---------------------------------------------------------
+      # - name: 📂 Deploy via SSH/Rsync
+      #   uses: easingthemes/ssh-deploy@main
+      #   env:
+      #     SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+      #     ARGS: "-rltgoDzvO --delete"
+      #     SOURCE: "./"
+      #     REMOTE_HOST: ${{ secrets.SERVER_HOST }}
+      #     REMOTE_USER: ${{ secrets.SERVER_USER }}
+      #     TARGET: "/var/www/html/"
+      #     EXCLUDE: "/.git/, /node_modules/, database.sql, README.md"
