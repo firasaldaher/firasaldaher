@@ -16,27 +16,20 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
       
-      # خيار 1: الرفع باستخدام FTP (الأكثر شيوعاً)
-      # تأكد من إضافة هذه المتغيرات في GitHub Secrets (Settings -> Secrets and variables -> Actions)
-      - name: 📂 Sync files via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 21
-          protocol: ftp
-          security: loose
-          timeout: 60000
-          # بما أن حساب الـ FTP الخاص بك يوجه مباشرة لمجلد المشروع، سنتركه كمسار رئيسي
-          server-dir: ./
-          # ملفات لا تريد رفعها للسيرفر
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            database.sql
-            README.md
+      - name: 📂 Deploy via lftp
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y lftp
+          # استخدام lftp مع تعطيل متطلبات SSL الصارمة وتفعيل الـ Passive Mode
+          lftp -c "
+            set ftp:ssl-allow no;
+            set ftp:passive-mode true;
+            open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER;
+            mirror -R -x .git/ -x .github/ -x database.sql -x README.md ./ ./
+          "
 
       # ---------------------------------------------------------
       # خيار 2: الرفع باستخدام SSH/Rsync (للسيرفرات الخاصة VPS)
