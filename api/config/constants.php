@@ -14,7 +14,8 @@ if (file_exists($envFile)) {
     $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
         $line = trim($line);
-        if (strpos($line, '#') === 0) continue;
+        if (strpos($line, '#') === 0)
+            continue;
         if (strpos($line, '=') !== false) {
             list($name, $value) = explode('=', $line, 2);
             $name = trim($name);
@@ -29,10 +30,14 @@ if (file_exists($envFile)) {
 }
 
 // Fallbacks if .env doesn't exist or is missing values
-if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
-if (!defined('DB_USER')) define('DB_USER', 'root');
-if (!defined('DB_PASS')) define('DB_PASS', '');
-if (!defined('DB_NAME')) define('DB_NAME', '33northlb_db');
+if (!defined('DB_HOST'))
+    define('DB_HOST', 'localhost');
+if (!defined('DB_USER'))
+    define('DB_USER', 'ovabcgyl_caraway_admin_db');
+if (!defined('DB_PASS'))
+    define('DB_PASS', 'dN6f9i1*,9hmv7G.');
+if (!defined('DB_NAME'))
+    define('DB_NAME', 'ovabcgyl_caraway_db');
 
 // JWT Secret Key (for future authentication)
 define('JWT_SECRET', 'YOUR_SUPER_SECRET_JWT_KEY_HERE_CHANGE_IN_PRODUCTION');
