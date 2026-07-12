@@ -21,12 +21,12 @@ if ($db) {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="en" dir="rtl">
+<<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Point of Sale | Caravan POS</title>
+  <title>Point of Sale | <?php echo htmlspecialchars(APP_NAME); ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&family=Montserrat:wght@200;400;600;700;800&display=swap" rel="stylesheet">
@@ -73,27 +73,25 @@ if ($db) {
     }
   </style>
 </head>
-<body>
+<body class="admin-body">
   <?php include __DIR__ . '/../includes/sidebar.php'; ?>
   <main class="admin-main">
-    <?php include __DIR__ . '/../includes/topbar.php'; ?>
-    <div class="page-content">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">نقطة البيع (POS)</h1>
-          <div class="page-subtitle">طلب جديد</div>
-        </div>
+    <?php include __DIR__ . '/../includes/header.php'; ?>
+    <div class="admin-content">
+      <div class="page-title" style="margin-bottom: 24px;">
+        <h1 style="font-family: var(--font-head); font-size: 24px; color: var(--admin-text); font-weight: 700;">Point of Sale (POS)</h1>
+        <div style="color: var(--admin-text-muted); font-size: 14px; margin-top: 4px;">New Order</div>
       </div>
       
       <?php if(isset($error)): ?>
-        <div class="alert alert-danger"><?= $error ?></div>
+        <div style="background: rgba(239,68,68,0.1); color: #ef4444; padding: 16px; border-radius: 8px; margin-bottom: 24px;"><?= $error ?></div>
       <?php endif; ?>
 
       <div class="pos-grid">
         <!-- Products Area -->
         <div class="products-area">
             <div class="category-filters" id="categoryFilters">
-                <button class="category-btn active" data-id="all">الكل</button>
+                <button class="category-btn active" data-id="all">All</button>
                 <?php foreach($categories as $cat): ?>
                     <button class="category-btn" data-id="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></button>
                 <?php endforeach; ?>
@@ -107,7 +105,7 @@ if ($db) {
                     </div>
                 <?php endforeach; ?>
                 <?php if(empty($products)): ?>
-                    <p style="color:var(--admin-text-muted);">لا توجد منتجات مضافة بعد. يمكنك إضافتها من قسم المنتجات.</p>
+                    <p style="color:var(--admin-text-muted);">No products added yet. You can add them from the Products section.</p>
                 <?php endif; ?>
             </div>
         </div>
@@ -115,24 +113,24 @@ if ($db) {
         <!-- Cart Area -->
         <div class="cart-area">
             <div class="order-type-toggle">
-                <div class="order-type-btn active" data-type="takeaway">تيك أواي (Takeaway)</div>
-                <div class="order-type-btn" data-type="dine_in">طاولة (Dine-in)</div>
+                <div class="order-type-btn active" data-type="takeaway">Takeaway</div>
+                <div class="order-type-btn" data-type="dine_in">Dine-in</div>
             </div>
             
             <div class="customer-info" id="customerInfo">
-                <input type="text" id="tableNumber" placeholder="رقم الطاولة أو اسم الزبون..." autocomplete="off">
+                <input type="text" id="tableNumber" placeholder="Table number or Customer name..." autocomplete="off">
             </div>
 
             <div class="cart-items" id="cartItems">
-                <div style="text-align: center; color: var(--admin-text-muted); padding: 40px 0;">السلة فارغة</div>
+                <div style="text-align: center; color: var(--admin-text-muted); padding: 40px 0;">Cart is empty</div>
             </div>
             
             <div>
                 <div class="cart-total">
-                    <span>الإجمالي</span>
+                    <span>Total</span>
                     <span id="cartTotalDisplay">$0.00</span>
                 </div>
-                <button class="btn btn-primary checkout-btn" id="checkoutBtn" disabled>إتمام الطلب</button>
+                <button class="btn btn-primary checkout-btn" id="checkoutBtn" disabled>Complete Order</button>
             </div>
         </div>
       </div>
@@ -214,7 +212,7 @@ if ($db) {
           
           const keys = Object.keys(cart);
           if(keys.length === 0) {
-              cartItemsContainer.innerHTML = '<div style="text-align: center; color: var(--admin-text-muted); padding: 40px 0;">السلة فارغة</div>';
+              cartItemsContainer.innerHTML = '<div style="text-align: center; color: var(--admin-text-muted); padding: 40px 0;">Cart is empty</div>';
               checkoutBtn.disabled = true;
               cartTotalDisplay.innerText = '$0.00';
               return;
@@ -261,7 +259,7 @@ if ($db) {
           };
           
           checkoutBtn.disabled = true;
-          checkoutBtn.innerText = 'جاري الحفظ...';
+          checkoutBtn.innerText = 'Processing...';
           
           fetch('../api/pos/create_order.php', {
               method: 'POST',
@@ -271,21 +269,21 @@ if ($db) {
           .then(res => res.json())
           .then(data => {
               if(data.status === 'success') {
-                  alert('تم إنشاء الطلب بنجاح! رقم الطلب: #' + data.order_id);
+                  alert('Order created successfully! Order #: ' + data.order_id);
                   // Reset Cart
                   for (let prop in cart) { delete cart[prop]; }
                   tableNumberInput.value = '';
                   renderCart();
               } else {
-                  alert('خطأ: ' + data.message);
+                  alert('Error: ' + data.message);
               }
           })
           .catch(err => {
-              alert('حدث خطأ في الاتصال بالسيرفر');
+              alert('Connection error with the server.');
               console.error(err);
           })
           .finally(() => {
-              checkoutBtn.innerText = 'إتمام الطلب';
+              checkoutBtn.innerText = 'Complete Order';
               if(Object.keys(cart).length > 0) checkoutBtn.disabled = false;
           });
       });
