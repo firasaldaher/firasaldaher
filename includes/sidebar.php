@@ -4,7 +4,7 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
 ?>
 <aside class="admin-sidebar" id="sidebar">
   <a href="<?php echo $admin_dir; ?>../index.php" class="sidebar-brand">
-    33<span>°</span>NORTH
+    Caraway
   </a>
   <nav class="sidebar-nav">
     <?php if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] !== 'cashier'): ?>
@@ -48,6 +48,13 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
     <a href="<?php echo $admin_dir; ?>staff/" class="nav-item <?php echo ($current_dir === 'staff') ? 'active' : ''; ?>">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
       Staff
+    </a>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['admin_role']) && $_SESSION['admin_role'] === 'super_admin'): ?>
+    <a href="<?php echo $admin_dir; ?>saas/" class="nav-item <?php echo ($current_dir === 'saas') ? 'active' : ''; ?>" style="color: var(--admin-danger);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      SaaS Control
     </a>
     <?php endif; ?>
   </nav>

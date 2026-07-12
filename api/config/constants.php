@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -57,7 +57,7 @@ if ($is_localhost) {
 define('JWT_SECRET', 'YOUR_SUPER_SECRET_JWT_KEY_HERE_CHANGE_IN_PRODUCTION');
 
 // AES Encryption Key (Must be exactly 32 bytes for AES-256)
-define('APP_KEY', '33northlb_secret_encryption_key!'); // Change this to a secure random 32-character string in production
+define('APP_KEY', 'caraway_secret_encryption_key!'); // Change this to a secure random 32-character string in production
 
 // Base URL for the application
-define('BASE_URL', '/33northlb/');
+define('BASE_URL', '/caraway/');

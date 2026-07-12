@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/includes/session.php';
 
 // If already logged in, redirect
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Admin Login | 33° NORTH</title>
+  <title>Admin Login | Caraway</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <div class="login-card">
     <div class="login-brand">
-      33<span>°</span>NORTH
+      Caraway
     </div>
     
     <?php if ($error): ?>

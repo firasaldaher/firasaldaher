@@ -7,7 +7,7 @@ $action = isset($urlParts[1]) ? $urlParts[1] : null;
 $method = $_SERVER['REQUEST_METHOD'];
 
 if (!$endpoint) {
-    Response::json('success', 'Welcome to the 33northlb API v' . API_VERSION);
+    Response::json('success', 'Welcome to the caraway API v' . API_VERSION);
 }
 
 // Route mapping

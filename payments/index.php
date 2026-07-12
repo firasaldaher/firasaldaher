@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../api/config/database.php';
 
@@ -55,7 +55,7 @@ $payments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Payments | Admin | 33° NORTH</title>
+  <title>Payments | Admin | Caraway</title>
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&family=Montserrat:wght@200;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/admin.css">
 </head>

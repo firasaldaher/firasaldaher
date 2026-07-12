@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../includes/auth.php';
 ?>
 <!DOCTYPE html>
@@ -6,7 +6,7 @@ require_once __DIR__ . '/../includes/auth.php';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Settings & Billing | Admin | 33° NORTH</title>
+  <title>Settings & Billing | Admin | Caraway</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -156,11 +156,11 @@ require_once __DIR__ . '/../includes/auth.php';
             <form onsubmit="event.preventDefault(); alert('Settings saved successfully!');">
               <div class="form-group" style="margin-bottom: 24px;">
                 <label style="margin-bottom: 8px; color: var(--admin-text); font-weight: 700;">Salon Name</label>
-                <input type="text" class="form-control" value="33° NORTH" style="font-size: 15px; padding: 14px 16px;" required>
+                <input type="text" class="form-control" value="Caraway" style="font-size: 15px; padding: 14px 16px;" required>
               </div>
               <div class="form-group" style="margin-bottom: 24px;">
                 <label style="margin-bottom: 8px; color: var(--admin-text); font-weight: 700;">Contact Email</label>
-                <input type="email" class="form-control" value="info@33northlb.com" style="font-size: 15px; padding: 14px 16px;" required>
+                <input type="email" class="form-control" value="info@caraway.com" style="font-size: 15px; padding: 14px 16px;" required>
               </div>
               <div class="form-group" style="margin-bottom: 24px;">
                 <label style="margin-bottom: 8px; color: var(--admin-text); font-weight: 700;">Currency</label>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/api/config/constants.php';
 require_once __DIR__ . '/api/config/database.php';
@@ -49,7 +49,7 @@ try {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Admin Dashboard | 33° NORTH</title>
+  <title>Admin Dashboard | Caraway</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
