@@ -14,10 +14,21 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 } else {
     // Check SaaS Lock
     $db = (new Database())->getConnection();
-    $stmt = $db->query("SELECT is_locked FROM system_settings LIMIT 1");
-    $settings = $stmt->fetch(PDO::FETCH_ASSOC);
+    $is_locked = 0;
     
-    $is_locked = $settings['is_locked'] ?? 0;
+    if ($db) {
+        try {
+            $stmt = $db->query("SELECT is_locked FROM system_settings LIMIT 1");
+            if ($stmt) {
+                $settings = $stmt->fetch(PDO::FETCH_ASSOC);
+                $is_locked = $settings['is_locked'] ?? 0;
+            }
+        } catch (PDOException $e) {
+            // Table might not exist yet
+            $is_locked = 0;
+        }
+    }
+    
     $role = $_SESSION['admin_role'] ?? 'cashier';
     
     if ($is_locked == 1 && $role !== 'super_admin') {
