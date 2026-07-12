@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     total_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     status ENUM('pending', 'completed', 'cancelled') DEFAULT 'completed',
+    order_type ENUM('takeaway', 'dine_in') DEFAULT 'takeaway',
+    customer_info VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
