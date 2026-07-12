@@ -7,8 +7,8 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
     exit;
 }
 
-require_once __DIR__ . '/../api/config/constants.php';
-require_once __DIR__ . '/../api/config/database.php';
+require_once __DIR__ . '/api/config/constants.php';
+require_once __DIR__ . '/api/config/database.php';
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

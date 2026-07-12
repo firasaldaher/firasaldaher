@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../../api/config/constants.php';
-require_once __DIR__ . '/../../api/config/database.php';
+require_once __DIR__ . '/../api/config/constants.php';
+require_once __DIR__ . '/../api/config/database.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -263,7 +263,7 @@ if ($db) {
           checkoutBtn.disabled = true;
           checkoutBtn.innerText = 'جاري الحفظ...';
           
-          fetch('create_order.php', {
+          fetch('../api/pos/create_order.php', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(payload)

@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../../api/config/database.php';
+require_once __DIR__ . '/../api/config/database.php';
 
 $db = (new Database())->getConnection();
 $message = "";
