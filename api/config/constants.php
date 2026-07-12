@@ -30,14 +30,20 @@ if (file_exists($envFile)) {
 }
 
 // Fallbacks if .env doesn't exist or is missing values
-if (!defined('DB_HOST'))
-    define('DB_HOST', 'localhost');
-if (!defined('DB_USER'))
-    define('DB_USER', 'ovabcgyl_caraway_admin_db');
-if (!defined('DB_PASS'))
-    define('DB_PASS', 'dN6f9i1*,9hmv7G.');
-if (!defined('DB_NAME'))
-    define('DB_NAME', 'ovabcgyl_caraway_db');
+$is_localhost = in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1']);
+
+if ($is_localhost) {
+    if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
+    if (!defined('DB_USER')) define('DB_USER', 'root');
+    if (!defined('DB_PASS')) define('DB_PASS', '');
+    if (!defined('DB_NAME')) define('DB_NAME', 'caraway_db'); // ضع اسم قاعدة بياناتك المحلية هنا
+} else {
+    // Production Credentials
+    if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
+    if (!defined('DB_USER')) define('DB_USER', 'caraway_admin_db');
+    if (!defined('DB_PASS')) define('DB_PASS', 'dN6f9i1*,9hmv7G.');
+    if (!defined('DB_NAME')) define('DB_NAME', 'ovabcgyl_caraway_db');
+}
 
 // JWT Secret Key (for future authentication)
 define('JWT_SECRET', 'YOUR_SUPER_SECRET_JWT_KEY_HERE_CHANGE_IN_PRODUCTION');
