@@ -4,6 +4,7 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../../includes/session.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -14,14 +15,16 @@ if(!empty($data->items) && !empty($data->total) && !empty($data->order_type)) {
     try {
         $db->beginTransaction();
 
-        $query = "INSERT INTO orders (total_amount, status, order_type, customer_info) VALUES (:total, 'completed', :order_type, :customer_info)";
+        $query = "INSERT INTO orders (total_amount, status, order_type, customer_info, cashier_id) VALUES (:total, 'completed', :order_type, :customer_info, :cashier_id)";
         $stmt = $db->prepare($query);
         
         $customer_info = !empty($data->customer_info) ? htmlspecialchars(strip_tags($data->customer_info)) : null;
+        $cashier_id = $_SESSION['admin_id'] ?? null;
         
         $stmt->bindParam(":total", $data->total);
         $stmt->bindParam(":order_type", $data->order_type);
         $stmt->bindParam(":customer_info", $customer_info);
+        $stmt->bindParam(":cashier_id", $cashier_id);
         
         if($stmt->execute()) {
             $order_id = $db->lastInsertId();

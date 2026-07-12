@@ -7,14 +7,24 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
     33<span>°</span>NORTH
   </a>
   <nav class="sidebar-nav">
+    <?php if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] !== 'cashier'): ?>
     <a href="<?php echo $admin_dir ? $admin_dir : './'; ?>" class="nav-item <?php echo ($current_dir === 'admin' || $current_dir === 'caraway_system') ? 'active' : ''; ?>">
       <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
       Dashboard
     </a>
-    <a href="<?php echo $admin_dir; ?>pos/" class="nav-item <?php echo ($current_dir === 'pos') ? 'active' : ''; ?>">
+    <?php endif; ?>
+    
+    <a href="<?php echo $admin_dir; ?>pos/" class="nav-item <?php echo ($current_dir === 'pos' && basename($_SERVER['PHP_SELF']) !== 'shift.php') ? 'active' : ''; ?>">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
       POS (Point of Sale)
     </a>
+
+    <a href="<?php echo $admin_dir; ?>pos/shift.php" class="nav-item <?php echo ($current_dir === 'pos' && basename($_SERVER['PHP_SELF']) === 'shift.php') ? 'active' : ''; ?>">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+      End of Shift (جرد)
+    </a>
+
+    <?php if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] !== 'cashier'): ?>
     <a href="<?php echo $admin_dir; ?>orders/" class="nav-item <?php echo ($current_dir === 'orders') ? 'active' : ''; ?>">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
       Orders History
@@ -39,6 +49,7 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
       Staff
     </a>
+    <?php endif; ?>
   </nav>
   <div style="padding: 24px; margin-top: auto;">
     <a href="<?php echo $admin_dir; ?>logout.php" class="btn btn-outline" style="width: 100%; justify-content: center; border: 1px solid var(--admin-border); color: var(--admin-danger);">
