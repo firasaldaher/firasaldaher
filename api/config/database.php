@@ -18,8 +18,7 @@ class Database {
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         } catch(PDOException $exception) {
-            // Note: In production, do not echo the raw error message. Log it instead.
-            error_log("Connection error: " . $exception->getMessage());
+            die("Connection error: " . $exception->getMessage());
         }
 
         return $this->conn;

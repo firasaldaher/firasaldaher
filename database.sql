@@ -53,3 +53,19 @@ CREATE TABLE IF NOT EXISTS inventory (
 
 -- Insert some default categories
 INSERT INTO categories (name) VALUES ('مشروبات ساخنة'), ('مشروبات باردة'), ('مأكولات'), ('حلويات');
+
+-- Users and Roles
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    role ENUM('super_admin', 'admin', 'cashier') NOT NULL DEFAULT 'cashier',
+    status ENUM('active', 'inactive') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Default Super Admin (Password: admin123)
+-- MD5 hash for admin123 is 0192023a7bbd73250516f069df18b500, but typically you use password_hash() in PHP.
+-- We will insert a placeholder that needs to be updated with your actual PHP hash logic.
+INSERT INTO users (username, password, full_name, role) VALUES ('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Super Admin', 'super_admin');
