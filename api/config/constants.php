@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 // API Constants
 
 define('API_VERSION', '1.0');
-define('APP_NAME', '33northlb');
+define('APP_NAME', 'caraway_system');
 
 // Database configuration
 $envFile = __DIR__ . '/../../.env';
@@ -33,16 +33,24 @@ if (file_exists($envFile)) {
 $is_localhost = in_array($_SERVER['SERVER_ADDR'] ?? '', ['127.0.0.1', '::1']) || strpos($_SERVER['HTTP_HOST'] ?? '', 'localhost') !== false;
 
 if ($is_localhost) {
-    if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
-    if (!defined('DB_USER')) define('DB_USER', 'root');
-    if (!defined('DB_PASS')) define('DB_PASS', '');
-    if (!defined('DB_NAME')) define('DB_NAME', 'ovabcgyl_caraway_db');
+    if (!defined('DB_HOST'))
+        define('DB_HOST', 'localhost');
+    if (!defined('DB_USER'))
+        define('DB_USER', 'root');
+    if (!defined('DB_PASS'))
+        define('DB_PASS', '');
+    if (!defined('DB_NAME'))
+        define('DB_NAME', 'ovabcgyl_caraway_db');
 } else {
     // Production Credentials
-    if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
-    if (!defined('DB_USER')) define('DB_USER', 'ovabcgyl_caraway_admin_db');
-    if (!defined('DB_PASS')) define('DB_PASS', 'd}yon3_T4QFugXXs');
-    if (!defined('DB_NAME')) define('DB_NAME', 'ovabcgyl_caraway_db');
+    if (!defined('DB_HOST'))
+        define('DB_HOST', 'localhost');
+    if (!defined('DB_USER'))
+        define('DB_USER', 'ovabcgyl_caraway_admin_db');
+    if (!defined('DB_PASS'))
+        define('DB_PASS', 'd}yon3_T4QFugXXs');
+    if (!defined('DB_NAME'))
+        define('DB_NAME', 'ovabcgyl_caraway_db');
 }
 
 // JWT Secret Key (for future authentication)
