@@ -30,7 +30,7 @@ if (file_exists($envFile)) {
 }
 
 // Fallbacks if .env doesn't exist or is missing values
-$is_localhost = in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1']);
+$is_localhost = in_array($_SERVER['SERVER_ADDR'] ?? '', ['127.0.0.1', '::1']) || strpos($_SERVER['HTTP_HOST'] ?? '', 'localhost') !== false;
 
 if ($is_localhost) {
     if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
