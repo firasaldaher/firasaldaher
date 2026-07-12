@@ -22,19 +22,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($db === null) {
             $error = 'Database connection failed. Please check your database credentials.';
         } else {
-            $query = "SELECT id, password_hash FROM admins WHERE username = :username LIMIT 1";
+            $query = "SELECT id, password, role FROM users WHERE username = :username LIMIT 1";
             $stmt = $db->prepare($query);
             $stmt->bindParam(':username', $username);
             $stmt->execute();
             
             if ($stmt->rowCount() > 0) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                if (password_verify($password, $row['password_hash'])) {
+                if (password_verify($password, $row['password'])) {
                     // Prevent Session Fixation attacks
                     session_regenerate_id(true);
                     
                     $_SESSION['admin_logged_in'] = true;
                     $_SESSION['admin_id'] = $row['id'];
+                    $_SESSION['role'] = $row['role']; // Save role in session
                     header("Location: index.php");
                     exit;
                 } else {
@@ -45,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     } catch(PDOException $e) {
-        $error = "Database error. Please try again later.";
+        $error = "Database error: " . $e->getMessage();
     }
 }
 ?>
