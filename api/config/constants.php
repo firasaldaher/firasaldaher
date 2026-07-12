@@ -41,7 +41,7 @@ if ($is_localhost) {
     // Production Credentials
     if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
     if (!defined('DB_USER')) define('DB_USER', 'ovabcgyl_caraway_admin_db');
-    if (!defined('DB_PASS')) define('DB_PASS', 'dN6f9i1*,9hmv7G.');
+    if (!defined('DB_PASS')) define('DB_PASS', 'd}yon3_T4QFugXXs');
     if (!defined('DB_NAME')) define('DB_NAME', 'ovabcgyl_caraway_db');
 }
 
