@@ -1000,6 +1000,30 @@ body.dark-mode .article-content {
     .hero-title { font-size: 2.2rem; }
     .footer-content { flex-direction: column; }
     .article-content { padding: 2rem; }
+    
+    /* Reduce giant paddings on mobile */
+    .services, .process, .portfolio, .testimonials, .pricing, .faq, .insights-teaser {
+        padding: 4rem 0 !important;
+    }
+    
+    /* Reduce internal card paddings */
+    .service-card, .process-step, .testimonial-card, .faq-card, .project-info {
+        padding: 1.5rem;
+    }
+    .pricing-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    /* Ensure single column on very small screens to avoid overflow */
+    .services-grid, .process-grid, .portfolio-grid, .testimonials-grid, .pricing-grid, .faq-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    /* Adjust CTA banner padding */
+    .cta-container {
+        padding: 3rem 1.5rem;
+    }
 }
 
 /* Floating Contact Button */
