@@ -24,6 +24,45 @@
     --font-family: 'Inter', sans-serif;
 }
 
+/* Dark Mode Theme */
+body.dark-mode {
+    --bg-color: #202124;
+    --bg-surface: #303134;
+    --text-main: #e8eaed;
+    --text-muted: #9aa0a6;
+    --border-color: #5f6368;
+    --primary: #8ab4f8; /* Lighter blue for dark mode */
+    --primary-hover: #aecbfa;
+    --shadow-1: 0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+    --shadow-2: 0 1px 2px 0 rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
+    --shadow-3: 0 4px 6px 0 rgba(0,0,0,0.3), 0 4px 12px 3px rgba(0,0,0,0.15);
+}
+
+/* Specific elements background override in dark mode */
+body.dark-mode .navbar.scrolled {
+    background-color: #202124 !important;
+    border-bottom: 1px solid var(--border-color);
+}
+body.dark-mode .navbar {
+    background-color: #202124 !important;
+}
+body.dark-mode .material-card {
+    background: #303134 !important;
+}
+body.dark-mode .tech-stack {
+    background-color: #202124 !important;
+}
+body.dark-mode footer {
+    background-color: #202124 !important;
+}
+body.dark-mode .article-content {
+    background-color: #303134 !important;
+}
+body.dark-mode .input-field {
+    background-color: #202124 !important;
+    color: var(--text-main);
+}
+
 * {
     margin: 0;
     padding: 0;
