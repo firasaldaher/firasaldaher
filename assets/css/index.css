@@ -929,14 +929,16 @@ body.dark-mode .article-content {
     gap: 12px;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(20px);
+    transform: translateY(20px) scale(0.9);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
 }
 
-.floating-contact:hover .fc-options {
+.floating-contact.active .fc-options {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
 }
 
 .fc-main-btn, .fc-btn {
@@ -947,7 +949,7 @@ body.dark-mode .article-content {
     color: white;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
     border: none;
     text-decoration: none;
 }
@@ -958,8 +960,15 @@ body.dark-mode .article-content {
     background: var(--primary);
 }
 
+.fc-main-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.floating-contact.active .fc-main-btn svg {
+    transform: rotate(45deg);
+}
+
 .fc-main-btn:hover {
-    transform: scale(1.05);
     box-shadow: 0 8px 25px rgba(26, 115, 232, 0.4);
 }
 
