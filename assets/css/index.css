@@ -62,6 +62,9 @@ body.dark-mode .input-field {
     background-color: #202124 !important;
     color: var(--text-main);
 }
+body.dark-mode .faq-card {
+    background-color: #303134 !important;
+}
 
 * {
     margin: 0;
@@ -408,6 +411,29 @@ footer {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* FAQ Section */
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+.faq-card {
+    padding: 2.5rem;
+    border-radius: 8px;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+}
+.faq-card h3 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+.faq-card p {
+    color: var(--text-main);
+    line-height: 1.6;
 }
 
 /* Responsive */
