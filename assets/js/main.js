@@ -7,9 +7,19 @@ if (typeof AOS !== 'undefined') {
     });
 }
 
-// Navbar scroll effect
+// Navbar scroll effect and Progress bar
 const navbar = document.querySelector('.navbar');
+const progressBar = document.getElementById('myBar');
+
 window.addEventListener('scroll', () => {
+    // Scroll Progress Bar Logic
+    if (progressBar) {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+    }
+
     if (window.scrollY > 50) {
         navbar.classList.add('scrolled');
         if (!document.body.classList.contains('dark-mode')) {
