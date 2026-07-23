@@ -671,6 +671,9 @@ body.dark-mode .tech-chip:hover {
     padding: 3rem 2rem;
     position: relative;
     border-top: 4px solid transparent;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .pricing-card.popular {
@@ -707,13 +710,13 @@ body.dark-mode .tech-chip:hover {
 .pricing-card .pricing-desc {
     color: var(--text-muted);
     margin-bottom: 2rem;
-    min-height: 80px;
 }
 
 .pricing-features {
     list-style: none;
     padding: 0;
     margin-bottom: 2.5rem;
+    flex-grow: 1;
 }
 
 .pricing-features li {
