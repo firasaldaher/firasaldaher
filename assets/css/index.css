@@ -545,6 +545,33 @@ body.dark-mode .project-image {
     padding: 4rem 0;
 }
 
+.tech-chip {
+    display: inline-block;
+    padding: 0.6rem 1.5rem;
+    background: rgba(26, 115, 232, 0.05);
+    color: var(--primary);
+    border: 1px solid rgba(26, 115, 232, 0.2);
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+body.dark-mode .tech-chip {
+    background: rgba(138, 180, 248, 0.05);
+    border-color: rgba(138, 180, 248, 0.2);
+}
+
+.tech-chip:hover {
+    background: var(--primary);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+body.dark-mode .tech-chip:hover {
+    color: #202124;
+}
+
 /* CTA Banner */
 .cta-banner {
     padding: 4rem 0;
