@@ -76,7 +76,7 @@ body::before {
 }
 body::after {
     width: 500px; height: 500px;
-    background: var(--google-red);
+    background: var(--primary); /* Changed from red */
     bottom: -100px; right: -100px;
 }
 body.dark-mode::before, body.dark-mode::after {
@@ -777,14 +777,14 @@ body.dark-mode .tech-chip:hover {
 .cta-container {
     text-align: center;
     padding: 4rem 2rem;
-    background: linear-gradient(135deg, rgba(26, 115, 232, 0.1), rgba(234, 67, 53, 0.05));
+    background: linear-gradient(135deg, rgba(26, 115, 232, 0.1), rgba(26, 115, 232, 0.05));
     border: 1px solid var(--primary);
     position: relative;
     overflow: hidden;
 }
 
 body.dark-mode .cta-container {
-    background: linear-gradient(135deg, rgba(138, 180, 248, 0.1), rgba(234, 67, 53, 0.05));
+    background: linear-gradient(135deg, rgba(138, 180, 248, 0.1), rgba(138, 180, 248, 0.05));
 }
 
 .cta-container::before {
