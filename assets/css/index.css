@@ -502,6 +502,74 @@ body.dark-mode .project-image {
     padding: 4rem 0;
 }
 
+/* CTA Banner */
+.cta-banner {
+    padding: 4rem 0;
+}
+
+.cta-container {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, rgba(26, 115, 232, 0.1), rgba(234, 67, 53, 0.05));
+    border: 1px solid var(--primary);
+    position: relative;
+    overflow: hidden;
+}
+
+body.dark-mode .cta-container {
+    background: linear-gradient(135deg, rgba(138, 180, 248, 0.1), rgba(234, 67, 53, 0.05));
+}
+
+.cta-container::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    background: var(--primary);
+    filter: blur(80px);
+    opacity: 0.2;
+    z-index: -1;
+}
+
+.cta-container h2 {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.cta-container p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: var(--text-main);
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.btn-cta {
+    background: var(--primary);
+    color: #ffffff;
+    font-size: 1.1rem;
+    padding: 0.8rem 2.5rem;
+    box-shadow: var(--shadow-2);
+}
+
+.btn-cta:hover {
+    background: var(--primary-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(26, 115, 232, 0.4);
+}
+
+body.dark-mode .btn-cta {
+    background: var(--primary);
+    color: #202124;
+}
+
 /* Contact Section */
 .contact {
     padding: 6rem 0;
