@@ -10,6 +10,7 @@ if (typeof AOS !== 'undefined') {
 // Navbar scroll effect and Progress bar
 const navbar = document.querySelector('.navbar');
 const progressBar = document.getElementById('myBar');
+let lastScrollTop = 0;
 
 window.addEventListener('scroll', () => {
     // Scroll Progress Bar Logic
@@ -32,6 +33,17 @@ window.addEventListener('scroll', () => {
             navbar.style.boxShadow = 'none';
         }
     }
+
+    // Smart Sticky Navbar Logic
+    let scrollTop = window.scrollY || document.documentElement.scrollTop;
+    if (scrollTop > lastScrollTop && scrollTop > 80) {
+        // Scrolling down
+        navbar.classList.add('nav-hidden');
+    } else {
+        // Scrolling up
+        navbar.classList.remove('nav-hidden');
+    }
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
 });
 
 // Dark Mode Toggle Logic
