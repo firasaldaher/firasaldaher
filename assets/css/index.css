@@ -738,6 +738,37 @@ body.dark-mode .tech-chip:hover {
     }
 }
 
+/* FAQ Section */
+.faq {
+    padding: 6rem 0;
+}
+
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.faq-card {
+    padding: 2.5rem;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.faq-card h3 {
+    margin-bottom: 1rem;
+    color: var(--primary);
+    font-size: 1.25rem;
+}
+
+.faq-card p {
+    color: var(--text-main);
+    flex-grow: 1;
+    margin: 0;
+}
+
 /* CTA Banner */
 .cta-banner {
     padding: 4rem 0;
