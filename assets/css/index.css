@@ -478,6 +478,13 @@ body.dark-mode .hero {
     text-align: left;
     position: relative;
     border-top: 4px solid var(--primary);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.process-step p {
+    flex-grow: 1;
 }
 
 .step-number {
