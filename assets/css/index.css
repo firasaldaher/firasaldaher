@@ -581,6 +581,23 @@ body.dark-mode .project-image {
 .testimonial-card {
     padding: 2.5rem;
     text-align: left;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.testimonial-card p {
+    font-style: italic;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    flex-grow: 1;
+}
+
+.testimonial-card h4 {
+    margin: 0;
+    color: var(--primary);
+    margin-top: auto;
 }
 
 /* FAQ Section */
