@@ -375,7 +375,8 @@
                 <div class="contact-wrapper material-card" data-aos="fade-up">
                     <h2 class="section-title">Ready to Build Your Next Project?</h2>
                     <p class="contact-text">Contact me to discuss your ideas and turn them into outstanding tech realities.</p>
-                    <form class="contact-form" action="#" method="POST" onsubmit="event.preventDefault(); alert('Your message has been sent successfully!');">
+                    <form action="#" method="POST" class="contact-form" onsubmit="document.getElementById('visitor_interest').value = window.getVisitorProfile();">
+                        <input type="hidden" id="visitor_interest" name="visitor_interest" value="">
                         <input type="text" placeholder="Your Name" required class="input-field">
                         <input type="email" placeholder="Email Address" required class="input-field">
                         <textarea placeholder="Tell me about your project idea..." rows="5" required class="input-field"></textarea>
@@ -416,10 +417,21 @@
         </button>
     </div>
 
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-banner" class="cookie-banner glass-card" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 600px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; z-index: 9999; text-align: center;">
+        <h4 style="margin:0; font-size: 1.1rem;">Your Privacy & Experience</h4>
+        <p style="margin:0; font-size: 0.9rem;">We use cookies and behavioral tracking to understand your interests and provide a highly personalized consultation. Is this okay?</p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <button id="accept-cookies" class="btn btn-primary" style="flex: 1;">Accept All</button>
+            <button id="decline-cookies" class="btn btn-outline" style="flex: 1;">Decline</button>
+        </div>
+    </div>
+
     <!-- AOS JS -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- JS -->
     <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/analytics.js"></script>
 </body>
 </html>
 
