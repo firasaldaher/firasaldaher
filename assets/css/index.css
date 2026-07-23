@@ -525,6 +525,7 @@ body.dark-mode .hero {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .project-image {
@@ -546,6 +547,24 @@ body.dark-mode .project-image {
 
 .project-info {
     padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.project-info p {
+    margin-bottom: 1rem;
+}
+
+.project-info p:last-of-type {
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+}
+
+.project-info .btn {
+    margin-top: auto;
+    font-size: 0.95rem;
+    padding: 0.6rem 1.2rem;
 }
 
 /* Testimonials Section */
