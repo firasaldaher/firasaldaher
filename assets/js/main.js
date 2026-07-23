@@ -17,10 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const navbar = document.querySelector('.navbar');
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
-            navbar.style.background = 'rgba(11, 15, 25, 0.95)';
-            navbar.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.5)';
+            navbar.style.background = '#ffffff';
+            navbar.style.boxShadow = '0 1px 2px 0 rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15)';
         } else {
-            navbar.style.background = 'rgba(11, 15, 25, 0.8)';
+            navbar.style.background = '#ffffff';
             navbar.style.boxShadow = 'none';
         }
     });
