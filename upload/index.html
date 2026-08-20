@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -265,6 +265,42 @@
         .info-chip svg { width: 14px; height: 14px; }
         .info-chip strong { color: var(--text-main); }
 
+        /* PAUSE / CANCEL CONTROLS */
+        .ctrl-btn {
+            flex: 1; padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-family);
+            font-size: 0.9rem; font-weight: 600;
+            cursor: pointer; border: none;
+            transition: all 0.2s ease;
+        }
+        .ctrl-pause {
+            background: var(--bg-surface);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+        .ctrl-pause:hover { background: rgba(251,188,4,0.12); border-color: var(--google-yellow); color: #b06000; }
+        .ctrl-cancel {
+            background: rgba(234,67,53,0.08);
+            color: var(--google-red);
+            border: 1px solid rgba(234,67,53,0.25);
+        }
+        .ctrl-cancel:hover { background: rgba(234,67,53,0.18); }
+
+        /* Chunk progress mini dots */
+        .chunk-dots {
+            display: flex; flex-wrap: wrap; gap: 3px;
+            margin-top: 6px;
+        }
+        .chunk-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--border-color);
+            transition: background 0.2s ease;
+        }
+        .chunk-dot.done { background: var(--google-green); }
+        .chunk-dot.active { background: var(--primary); animation: pulse 0.8s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
         @media (max-width: 600px) {
             .upload-card { padding: 24px 18px; }
             .drop-zone { padding: 36px 16px; }
@@ -411,6 +447,12 @@
                 رفع الملف
             </button>
 
+            <!-- Pause / Cancel controls (hidden until upload starts) -->
+            <div id="upload-controls" style="display:none; gap:10px; margin-top:10px;">
+                <button id="pause-btn" class="ctrl-btn ctrl-pause">⏸ إيقاف مؤقت</button>
+                <button id="cancel-btn" class="ctrl-btn ctrl-cancel">✕ إلغاء</button>
+            </div>
+
             <div class="info-row">
                 <div class="info-chip">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -422,16 +464,26 @@
                 </div>
                 <div class="info-chip">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                    <span>رفع تدريجي سريع</span>
+                    <span>رفع متوازٍ بـ <strong>4 مسارات</strong></span>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        const MAX_SIZE_B = 200 * 1024 * 1024;
-        // غيّر هذا إلى endpoint الخادم الخاص بك
-        const UPLOAD_ENDPOINT = '/api/upload-video';
+        /* =====================================================
+           UPLOAD ENGINE CONFIG
+           ===================================================== */
+        const MAX_SIZE_B      = 200 * 1024 * 1024;   // 200 MB hard limit
+        const CHUNK_SIZE      = 5  * 1024 * 1024;    // 5 MB per chunk — sweet spot for speed
+        const PARALLEL_LIMIT  = 4;                    // concurrent chunk uploads
+        const MAX_RETRIES     = 3;                    // exponential-backoff retries per chunk
+        const RETRY_BASE_MS   = 500;                  // base retry delay (doubles each attempt)
+
+        // ⚙️ Change to your server endpoints
+        const UPLOAD_INIT_ENDPOINT   = '/api/upload/init';    // POST → returns { uploadId }
+        const UPLOAD_CHUNK_ENDPOINT  = '/api/upload/chunk';   // POST chunk → returns { ok }
+        const UPLOAD_FINISH_ENDPOINT = '/api/upload/finish';  // POST → merge & finalize
 
         const dropZone      = document.getElementById('drop-zone');
         const fileInput     = document.getElementById('file-input');
@@ -455,8 +507,18 @@
         const iconSun       = document.getElementById('icon-sun');
         const iconMoon      = document.getElementById('icon-moon');
 
-        let selectedFile = null;
-        let uploadStartTime = null;
+        let selectedFile      = null;
+        let uploadState      = null;   // null | 'uploading' | 'paused' | 'done' | 'error'
+        let chunksDone       = 0;
+        let totalChunks      = 0;
+        let uploadId         = null;
+        let abortControllers = [];     // one AbortController per in-flight chunk
+        let pauseRequested   = false;
+        let bytesUploaded    = 0;
+        let uploadStartTime  = null;
+        // Sliding-window speed estimator (last 6 samples)
+        const speedSamples   = [];
+        const SPEED_WINDOW   = 6;
 
         // Theme
         if (localStorage.getItem('theme') === 'dark') applyDark();
@@ -494,80 +556,296 @@
         }
 
         removeBtn.addEventListener('click', () => {
+            cancelUpload();
             selectedFile = null; fileInput.value = '';
             filePreview.classList.remove('visible');
             dropZone.classList.remove('has-file');
             uploadBtn.disabled = true;
             resetProgress(); hideAlerts();
+            showControls(false);
         });
 
-        uploadBtn.addEventListener('click', () => {
+        /* --------------------------------------------------
+           START UPLOAD — entry point
+        -------------------------------------------------- */
+        uploadBtn.addEventListener('click', async () => {
             if (!selectedFile) return;
             const title = document.getElementById('video-title').value.trim();
-            if (!title) { showError('يرجى إدخال اسم المشروع / الفيديو.'); document.getElementById('video-title').focus(); return; }
-            hideAlerts(); setUploading(true);
-            const formData = new FormData();
-            formData.append('video', selectedFile);
-            formData.append('title', title);
-            formData.append('type', document.getElementById('video-type').value);
-            formData.append('notes', document.getElementById('video-notes').value);
-            uploadStartTime = Date.now();
-            const xhr = new XMLHttpRequest();
-            xhr.upload.addEventListener('progress', e => {
-                if (!e.lengthComputable) return;
-                const pct = Math.round((e.loaded / e.total) * 100);
-                updateProgress(pct, e.loaded, e.total);
-            });
-            xhr.addEventListener('load', () => {
-                setUploading(false);
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    updateProgress(100);
-                    showSuccess('تم رفع "' + selectedFile.name + '" بنجاح!');
-                } else {
-                    showError('حدث خطأ أثناء الرفع (كود: ' + xhr.status + '). يرجى المحاولة مجدداً.');
-                }
-            });
-            xhr.addEventListener('error', () => { setUploading(false); showError('فشل الاتصال بالخادم. تحقق من اتصالك بالإنترنت.'); });
-            xhr.addEventListener('abort', () => { setUploading(false); showError('تم إلغاء عملية الرفع.'); });
-            xhr.open('POST', UPLOAD_ENDPOINT);
-            xhr.send(formData);
+            if (!title) {
+                showError('يرجى إدخال اسم المشروع / الفيديو.');
+                document.getElementById('video-title').focus();
+                return;
+            }
+            hideAlerts();
+            await startChunkedUpload(selectedFile, title);
         });
 
-        function updateProgress(pct, loaded, total) {
+        /* --------------------------------------------------
+           PAUSE / RESUME / CANCEL
+        -------------------------------------------------- */
+        document.getElementById('pause-btn').addEventListener('click', () => {
+            if (uploadState === 'uploading') {
+                pauseRequested = true;
+                uploadState = 'paused';
+                abortControllers.forEach(ac => ac.abort());
+                abortControllers = [];
+                document.getElementById('pause-btn').textContent = '▶ متابعة';
+                progressLabel.textContent = 'متوقف مؤقتاً...';
+            } else if (uploadState === 'paused') {
+                pauseRequested = false;
+                uploadState = 'uploading';
+                document.getElementById('pause-btn').textContent = '⏸ إيقاف مؤقت';
+                resumeChunkedUpload();
+            }
+        });
+
+        document.getElementById('cancel-btn').addEventListener('click', () => {
+            cancelUpload();
+            showError('تم إلغاء عملية الرفع.');
+            resetProgress();
+            showControls(false);
+            setUploading(false);
+        });
+
+        function cancelUpload() {
+            abortControllers.forEach(ac => ac.abort());
+            abortControllers = [];
+            uploadState = null;
+            pauseRequested = false;
+            chunksDone = 0;
+            bytesUploaded = 0;
+            speedSamples.length = 0;
+        }
+
+        /* --------------------------------------------------
+           CHUNKED UPLOAD ENGINE
+        -------------------------------------------------- */
+        let pendingChunkQueue = [];   // indices of chunks not yet uploaded
+        let activeWorkers     = 0;
+
+        async function startChunkedUpload(file, title) {
+            totalChunks    = Math.ceil(file.size / CHUNK_SIZE);
+            chunksDone     = 0;
+            bytesUploaded  = 0;
+            uploadStartTime = Date.now();
+            uploadState    = 'uploading';
+            pauseRequested = false;
+            speedSamples.length = 0;
+            pendingChunkQueue   = Array.from({ length: totalChunks }, (_, i) => i);
+
+            setUploading(true);
+            showControls(true);
             progressWrap.classList.add('visible');
-            progressFill.style.width = pct + '%';
-            progressPct.textContent = pct + '%';
-            if (pct === 100) { progressLabel.textContent = 'اكتمل الرفع!'; progressSpeed.textContent = ''; }
-            else if (loaded && total) {
-                const elapsed = (Date.now() - uploadStartTime) / 1000;
-                const speed = loaded / elapsed;
-                const remaining = (total - loaded) / speed;
-                progressSpeed.textContent = 'سرعة الرفع: ' + formatSize(speed) + '/ث — المتبقي: ' + formatTime(remaining);
+            progressLabel.textContent = 'جارٍ الرفع — ' + totalChunks + ' أجزاء بالتوازي...';
+
+            // 1. Init session on server (get uploadId)
+            try {
+                const initRes = await fetchJSON('POST', UPLOAD_INIT_ENDPOINT, {
+                    filename : file.name,
+                    filesize : file.size,
+                    chunks   : totalChunks,
+                    title    : title,
+                    type     : document.getElementById('video-type').value,
+                    notes    : document.getElementById('video-notes').value
+                });
+                uploadId = initRes.uploadId;
+            } catch (e) {
+                showError('فشل بدء جلسة الرفع: ' + e.message);
+                setUploading(false); showControls(false); return;
+            }
+
+            // 2. Pump parallel workers
+            await pumpWorkers(file);
+        }
+
+        async function resumeChunkedUpload() {
+            if (!selectedFile) return;
+            await pumpWorkers(selectedFile);
+        }
+
+        async function pumpWorkers(file) {
+            // Launch up to PARALLEL_LIMIT workers simultaneously
+            const workers = [];
+            for (let i = 0; i < PARALLEL_LIMIT; i++) {
+                workers.push(worker(file));
+            }
+            await Promise.all(workers);
+
+            // All workers done — if no pause/cancel, finalize
+            if (uploadState === 'uploading' && chunksDone === totalChunks) {
+                await finalizeUpload();
             }
         }
+
+        async function worker(file) {
+            while (true) {
+                if (pauseRequested || uploadState !== 'uploading') break;
+                const chunkIndex = pendingChunkQueue.shift();
+                if (chunkIndex === undefined) break;   // queue exhausted
+
+                const success = await uploadChunkWithRetry(file, chunkIndex);
+                if (!success) {
+                    // Unrecoverable — abort everything
+                    cancelUpload();
+                    showError('فشل رفع جزء من الملف بعد ' + MAX_RETRIES + ' محاولات. يرجى المحاولة مجدداً.');
+                    setUploading(false); showControls(false);
+                    return;
+                }
+            }
+        }
+
+        async function uploadChunkWithRetry(file, index) {
+            const start = index * CHUNK_SIZE;
+            const end   = Math.min(start + CHUNK_SIZE, file.size);
+            const blob  = file.slice(start, end);
+            const chunkBytes = end - start;
+
+            for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+                if (pauseRequested || uploadState !== 'uploading') return false;
+
+                const ac = new AbortController();
+                abortControllers.push(ac);
+
+                try {
+                    const form = new FormData();
+                    form.append('uploadId',   uploadId);
+                    form.append('chunkIndex', index);
+                    form.append('totalChunks', totalChunks);
+                    form.append('chunk',       blob, 'chunk');
+
+                    const t0 = Date.now();
+                    const res = await fetch(UPLOAD_CHUNK_ENDPOINT, {
+                        method: 'POST',
+                        body:   form,
+                        signal: ac.signal
+                    });
+                    const elapsed = (Date.now() - t0) / 1000;
+
+                    // Remove this controller
+                    abortControllers = abortControllers.filter(x => x !== ac);
+
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+                    // Update progress
+                    chunksDone++;
+                    bytesUploaded += chunkBytes;
+                    recordSpeedSample(chunkBytes, elapsed);
+                    renderProgress();
+                    return true;
+
+                } catch (err) {
+                    abortControllers = abortControllers.filter(x => x !== ac);
+                    if (err.name === 'AbortError') return false;  // paused/cancelled
+                    if (attempt < MAX_RETRIES - 1) {
+                        const delay = RETRY_BASE_MS * Math.pow(2, attempt);
+                        progressLabel.textContent = `إعادة المحاولة للجزء ${index + 1}… (${attempt + 2}/${MAX_RETRIES})`;
+                        await sleep(delay);
+                    }
+                }
+            }
+            return false;  // all retries failed
+        }
+
+        async function finalizeUpload() {
+            try {
+                progressLabel.textContent = 'جارٍ دمج الأجزاء...';
+                await fetchJSON('POST', UPLOAD_FINISH_ENDPOINT, { uploadId, filename: selectedFile.name });
+                updateProgress(100);
+                uploadState = 'done';
+                setUploading(false);
+                showControls(false);
+                showSuccess('تم رفع "' + selectedFile.name + '" بنجاح! ✅');
+            } catch (e) {
+                showError('تم رفع الملف لكن فشل إتمام العملية: ' + e.message);
+                setUploading(false); showControls(false);
+            }
+        }
+
+        /* --------------------------------------------------
+           SPEED & PROGRESS
+        -------------------------------------------------- */
+        function recordSpeedSample(bytes, seconds) {
+            speedSamples.push(bytes / seconds);
+            if (speedSamples.length > SPEED_WINDOW) speedSamples.shift();
+        }
+
+        function smoothedSpeed() {
+            if (!speedSamples.length) return 0;
+            return speedSamples.reduce((a, b) => a + b, 0) / speedSamples.length;
+        }
+
+        function renderProgress() {
+            const pct = Math.round((chunksDone / totalChunks) * 100);
+            progressWrap.classList.add('visible');
+            progressFill.style.width = pct + '%';
+            progressPct.textContent  = pct + '%';
+
+            const speed     = smoothedSpeed();
+            const remaining = speed > 0 ? (selectedFile.size - bytesUploaded) / speed : 0;
+            progressLabel.textContent = 'رفع ' + chunksDone + ' من ' + totalChunks + ' جزء';
+            progressSpeed.textContent = speed > 0
+                ? 'السرعة: ' + formatSize(speed) + '/ث  —  المتبقي: ' + formatTime(remaining)
+                   + '  —  تم: ' + formatSize(bytesUploaded) + ' / ' + formatSize(selectedFile.size)
+                : '';
+        }
+
+        function updateProgress(pct) {
+            progressFill.style.width = pct + '%';
+            progressPct.textContent  = pct + '%';
+            if (pct === 100) {
+                progressLabel.textContent = 'اكتمل الرفع!';
+                progressSpeed.textContent = 'تم بنجاح في ' + formatTime((Date.now() - uploadStartTime) / 1000);
+            }
+        }
+
         function resetProgress() {
             progressWrap.classList.remove('visible');
             progressFill.style.width = '0%';
-            progressPct.textContent = '0%';
+            progressPct.textContent  = '0%';
             progressLabel.textContent = 'جارٍ الرفع...';
             progressSpeed.textContent = '';
         }
+
+        /* --------------------------------------------------
+           UI HELPERS
+        -------------------------------------------------- */
         function setUploading(state) {
             uploadBtn.disabled = state;
             uploadBtn.classList.toggle('loading', state);
             btnSpinner.classList.toggle('visible', state);
             btnIcon.style.display = state ? 'none' : 'block';
         }
+
+        function showControls(show) {
+            document.getElementById('upload-controls').style.display = show ? 'flex' : 'none';
+        }
+
         function showSuccess(msg) { successMsg.textContent = msg; alertSuccess.classList.add('visible'); alertError.classList.remove('visible'); }
         function showError(msg)   { errorMsg.textContent = msg; alertError.classList.add('visible'); alertSuccess.classList.remove('visible'); }
         function hideAlerts()     { alertSuccess.classList.remove('visible'); alertError.classList.remove('visible'); }
+
+        /* --------------------------------------------------
+           UTILITIES
+        -------------------------------------------------- */
+        async function fetchJSON(method, url, body) {
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        }
+
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
         function formatSize(bytes) {
             if (bytes >= 1024*1024) return (bytes/(1024*1024)).toFixed(1)+' MB';
-            if (bytes >= 1024) return (bytes/1024).toFixed(0)+' KB';
+            if (bytes >= 1024)      return (bytes/1024).toFixed(0)+' KB';
             return bytes+' B';
         }
         function formatTime(sec) {
-            if (sec < 60) return Math.round(sec)+' ث';
+            if (sec < 60)   return Math.round(sec)+' ث';
             if (sec < 3600) return Math.round(sec/60)+' د';
             return Math.round(sec/3600)+' س';
         }
