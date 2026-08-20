@@ -480,10 +480,10 @@
         const MAX_RETRIES     = 3;                    // exponential-backoff retries per chunk
         const RETRY_BASE_MS   = 500;                  // base retry delay (doubles each attempt)
 
-        // ⚙️ Change to your server endpoints
-        const UPLOAD_INIT_ENDPOINT   = '/api/upload/init';    // POST → returns { uploadId }
-        const UPLOAD_CHUNK_ENDPOINT  = '/api/upload/chunk';   // POST chunk → returns { ok }
-        const UPLOAD_FINISH_ENDPOINT = '/api/upload/finish';  // POST → merge & finalize
+        // ⚙️ PHP Backend endpoints
+        const UPLOAD_INIT_ENDPOINT   = '/api/upload/index.php?action=init';
+        const UPLOAD_CHUNK_ENDPOINT  = '/api/upload/index.php?action=chunk';
+        const UPLOAD_FINISH_ENDPOINT = '/api/upload/index.php?action=finish';
 
         const dropZone      = document.getElementById('drop-zone');
         const fileInput     = document.getElementById('file-input');
