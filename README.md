@@ -1,7 +1,7 @@
 # Caraway System
 
 > [!IMPORTANT]
-> This project is under development. The code and documentation are subject to change.
+> This project is  under development. The code and documentation are subject to change.
 
 ## 📋 About
 
