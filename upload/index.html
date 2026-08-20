@@ -1,854 +1,358 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>رفع ملفات الفيديو | ENG. Firas Daher</title>
-    <meta name="description" content="صفحة رفع ملفات الفيديو للمونتاج - تدعم حجم حتى 200MB">
+    <meta name="description" content="صفحة رفع ملفات الفيديو للمونتاج — تدعم حتى 200 MB">
     <meta name="author" content="ENG. Firas Daher">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #ffffff;
-            --bg-surface: #f8f9fa;
-            --text-main: #202124;
-            --text-muted: #5f6368;
-            --primary: #1a73e8;
-            --primary-hover: #174ea6;
-            --google-red: #ea4335;
-            --google-yellow: #fbbc04;
-            --google-green: #34a853;
-            --border-color: rgba(218, 220, 224, 0.6);
-            --shadow-1: 0 4px 30px rgba(0, 0, 0, 0.06);
-            --shadow-2: 0 8px 32px rgba(26, 115, 232, 0.15);
-            --font-family: 'Tajawal', 'Inter', sans-serif;
-            --radius: 16px;
-            --radius-sm: 10px;
-        }
-        body.dark-mode {
-            --bg-color: #202124;
-            --bg-surface: #303134;
-            --text-main: #e8eaed;
-            --text-muted: #9aa0a6;
-            --border-color: rgba(95, 99, 104, 0.5);
-            --primary: #8ab4f8;
-            --primary-hover: #aecbfa;
-            --shadow-1: 0 4px 30px rgba(0, 0, 0, 0.25);
-            --shadow-2: 0 8px 32px rgba(138, 180, 248, 0.15);
-        }
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: var(--font-family);
-            line-height: 1.6;
-            min-height: 100vh;
-            overflow-x: hidden;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        body::before, body::after {
-            content: '';
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(120px);
-            z-index: -1;
-            opacity: 0.12;
-            pointer-events: none;
-        }
-        body::before { width: 600px; height: 600px; background: var(--primary); top: -200px; left: -100px; }
-        body::after  { width: 500px; height: 500px; background: var(--google-green); bottom: -100px; right: -100px; }
-
+        :root{--bg:#fff;--surface:#f8f9fa;--text:#202124;--muted:#5f6368;--primary:#1a73e8;--primary-h:#174ea6;--green:#34a853;--red:#ea4335;--yellow:#fbbc04;--border:rgba(218,220,224,.65);--shadow:0 4px 28px rgba(0,0,0,.07);--font:'Tajawal','Inter',sans-serif;--r:16px;--rsm:10px}
+        body.dark{--bg:#202124;--surface:#303134;--text:#e8eaed;--muted:#9aa0a6;--border:rgba(95,99,104,.55);--primary:#8ab4f8;--primary-h:#aecbfa;--shadow:0 4px 28px rgba(0,0,0,.28)}
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6;transition:background .3s,color .3s}
+        body::before,body::after{content:'';position:fixed;border-radius:50%;filter:blur(110px);z-index:-1;pointer-events:none;opacity:.11}
+        body::before{width:580px;height:580px;background:var(--primary);top:-180px;left:-80px}
+        body::after{width:480px;height:480px;background:var(--green);bottom:-80px;right:-80px}
         /* NAV */
-        .navbar {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 32px;
-            background: rgba(255,255,255,0.78);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            transition: background 0.3s ease;
-        }
-        body.dark-mode .navbar { background: rgba(32,33,36,0.82); }
-        .nav-logo {
-            font-weight: 700; font-size: 1.1rem; color: var(--primary);
-            text-decoration: none; display: flex; align-items: center; gap: 8px;
-        }
-        .nav-logo svg { width: 26px; height: 26px; }
-        .nav-actions { display: flex; align-items: center; gap: 10px; }
-        .nav-back {
-            display: flex; align-items: center; gap: 6px;
-            color: var(--text-muted); font-size: 0.9rem; text-decoration: none;
-            padding: 6px 14px; border-radius: 20px;
-            border: 1px solid var(--border-color); transition: all 0.2s;
-        }
-        .nav-back:hover { background: var(--bg-surface); color: var(--primary); }
-        .theme-btn {
-            background: none; border: 1px solid var(--border-color); border-radius: 50%;
-            width: 38px; height: 38px; cursor: pointer; color: var(--text-muted);
-            display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-        }
-        .theme-btn:hover { background: var(--bg-surface); color: var(--primary); }
-
+        .nav{position:fixed;inset:0 0 auto 0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:14px 32px;background:rgba(255,255,255,.82);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .3s}
+        body.dark .nav{background:rgba(32,33,36,.88)}
+        .nav-logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:1.05rem;color:var(--primary);text-decoration:none}
+        .nav-logo svg{width:24px;height:24px;flex-shrink:0}
+        .nav-right{display:flex;align-items:center;gap:10px}
+        .nav-link{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:.88rem;text-decoration:none;padding:6px 14px;border-radius:20px;border:1px solid var(--border);transition:all .2s}
+        .nav-link:hover{background:var(--surface);color:var(--primary)}
+        .icon-btn{width:38px;height:38px;border-radius:50%;cursor:pointer;border:1px solid var(--border);background:none;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:all .2s}
+        .icon-btn:hover{background:var(--surface);color:var(--primary)}
         /* PAGE */
-        .page-wrapper {
-            min-height: 100vh; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            padding: 100px 24px 60px;
-        }
-        .page-header { text-align: center; margin-bottom: 36px; max-width: 560px; }
-        .badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(26,115,232,0.1); color: var(--primary);
-            font-size: 0.78rem; font-weight: 600; padding: 4px 14px;
-            border-radius: 20px; margin-bottom: 14px;
-            letter-spacing: 0.5px; text-transform: uppercase;
-        }
-        .page-header h1 {
-            font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700;
-            color: var(--text-main); margin-bottom: 10px; line-height: 1.3;
-        }
-        .page-header p { color: var(--text-muted); font-size: 1rem; }
-
+        .page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 20px 60px}
+        .header{text-align:center;max-width:540px;margin-bottom:32px}
+        .badge{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--primary);background:rgba(26,115,232,.1);padding:4px 14px;border-radius:20px;margin-bottom:12px}
+        .header h1{font-size:clamp(1.55rem,4vw,2.3rem);font-weight:700;line-height:1.3;margin-bottom:8px}
+        .header p{color:var(--muted);font-size:.97rem}
         /* CARD */
-        .upload-card {
-            width: 100%; max-width: 640px;
-            background: rgba(255,255,255,0.68);
-            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius); padding: 36px;
-            box-shadow: var(--shadow-1);
-        }
-        body.dark-mode .upload-card { background: rgba(48,49,52,0.78); }
-
+        .card{width:100%;max-width:620px;background:rgba(255,255,255,.72);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:var(--r);padding:34px;box-shadow:var(--shadow)}
+        body.dark .card{background:rgba(48,49,52,.82)}
         /* DROP ZONE */
-        .drop-zone {
-            border: 2px dashed var(--border-color);
-            border-radius: var(--radius-sm); padding: 48px 24px;
-            text-align: center; cursor: pointer;
-            transition: all 0.25s ease; overflow: hidden;
-        }
-        .drop-zone:hover, .drop-zone.drag-over {
-            border-color: var(--primary); background: rgba(26,115,232,0.04);
-        }
-        .drop-zone.drag-over { transform: scale(1.01); }
-        .drop-zone.has-file { border-color: var(--google-green); background: rgba(52,168,83,0.04); }
-        .drop-icon {
-            width: 72px; height: 72px; margin: 0 auto 18px;
-            background: rgba(26,115,232,0.1); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.3s ease;
-        }
-        .drop-zone:hover .drop-icon, .drop-zone.drag-over .drop-icon {
-            background: rgba(26,115,232,0.18); transform: scale(1.08);
-        }
-        .drop-zone.has-file .drop-icon { background: rgba(52,168,83,0.15); }
-        .drop-icon svg { width: 34px; height: 34px; }
-        .drop-title { font-size: 1.1rem; font-weight: 600; color: var(--text-main); margin-bottom: 6px; }
-        .drop-sub { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 16px; }
-        .browse-btn {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: var(--primary); color: #fff; padding: 9px 22px;
-            border-radius: 22px; font-size: 0.9rem; font-weight: 500;
-            cursor: pointer; border: none;
-            font-family: var(--font-family);
-            transition: background 0.2s, transform 0.15s;
-        }
-        .browse-btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
-        #file-input { display: none; }
-        .formats-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 18px; }
-        .format-tag {
-            background: var(--bg-surface); border: 1px solid var(--border-color);
-            border-radius: 6px; font-size: 0.75rem; font-weight: 600;
-            color: var(--text-muted); padding: 3px 10px;
-        }
-
-        /* FILE PREVIEW */
-        .file-preview {
-            display: none; align-items: center; gap: 14px;
-            background: var(--bg-surface); border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm); padding: 14px 16px;
-            margin-top: 20px; animation: slideIn 0.3s ease;
-        }
-        .file-preview.visible { display: flex; }
-        @keyframes slideIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
-        .file-thumb {
-            width: 48px; height: 48px; border-radius: 10px;
-            background: rgba(26,115,232,0.12);
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        }
-        .file-thumb svg { width: 24px; height: 24px; color: var(--primary); }
-        .file-meta { flex: 1; min-width: 0; }
-        .file-name { font-size: 0.9rem; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .file-size { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
-        .remove-btn {
-            background: none; border: none; cursor: pointer; color: var(--text-muted);
-            padding: 6px; border-radius: 50%; transition: all 0.2s; display: flex;
-        }
-        .remove-btn:hover { background: rgba(234,67,53,0.1); color: var(--google-red); }
-
+        .dz{border:2px dashed var(--border);border-radius:var(--rsm);padding:44px 20px;text-align:center;cursor:pointer;transition:all .22s;user-select:none}
+        .dz:hover,.dz.over{border-color:var(--primary);background:rgba(26,115,232,.04)}
+        .dz.over{transform:scale(1.015)}
+        .dz.ready{border-color:var(--green);background:rgba(52,168,83,.04)}
+        .dz-ico{width:68px;height:68px;border-radius:50%;margin:0 auto 16px;background:rgba(26,115,232,.1);display:flex;align-items:center;justify-content:center;transition:all .25s}
+        .dz:hover .dz-ico,.dz.over .dz-ico{background:rgba(26,115,232,.18);transform:scale(1.1)}
+        .dz.ready .dz-ico{background:rgba(52,168,83,.15)}
+        .dz-ico svg{width:32px;height:32px}
+        .dz-title{font-size:1.05rem;font-weight:600;margin-bottom:5px}
+        .dz-sub{font-size:.85rem;color:var(--muted);margin-bottom:14px}
+        .pick-btn{display:inline-flex;align-items:center;gap:7px;background:var(--primary);color:#fff;padding:9px 22px;border-radius:22px;font-family:var(--font);font-size:.88rem;font-weight:600;border:none;cursor:pointer;transition:background .2s,transform .15s}
+        .pick-btn:hover{background:var(--primary-h);transform:translateY(-1px)}
+        .fmts{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:16px}
+        .fmt{background:var(--surface);border:1px solid var(--border);border-radius:5px;font-size:.72rem;font-weight:700;color:var(--muted);padding:3px 9px}
+        /* PREVIEW */
+        .prev-row{display:none;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:13px 15px;margin-top:18px}
+        .prev-row.show{display:flex;animation:fu .25s ease}
+        @keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+        .prev-thumb{width:44px;height:44px;flex-shrink:0;border-radius:9px;background:rgba(26,115,232,.12);display:flex;align-items:center;justify-content:center}
+        .prev-thumb svg{width:22px;height:22px;color:var(--primary)}
+        .prev-meta{flex:1;min-width:0}
+        .prev-name{font-size:.88rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .prev-size{font-size:.78rem;color:var(--muted)}
+        .clear-btn{background:none;border:none;cursor:pointer;color:var(--muted);padding:5px;border-radius:50%;display:flex;transition:all .2s}
+        .clear-btn:hover{background:rgba(234,67,53,.1);color:var(--red)}
         /* FORM */
-        .form-section { margin-top: 24px; display: flex; flex-direction: column; gap: 16px; }
-        .form-group { display: flex; flex-direction: column; gap: 6px; }
-        .form-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
-        .form-input, .form-select, .form-textarea {
-            width: 100%; padding: 11px 14px;
-            border: 1px solid var(--border-color); border-radius: var(--radius-sm);
-            background: var(--bg-color); color: var(--text-main);
-            font-family: var(--font-family); font-size: 0.9rem; outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        body.dark-mode .form-input,
-        body.dark-mode .form-select,
-        body.dark-mode .form-textarea { background: var(--bg-surface); }
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
-            border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,115,232,0.12);
-        }
-        .form-textarea { resize: vertical; min-height: 90px; }
-        .form-select { cursor: pointer; }
-
+        .form-grid{margin-top:22px;display:flex;flex-direction:column;gap:14px}
+        .form-group{display:flex;flex-direction:column;gap:5px}
+        .lbl{font-size:.82rem;font-weight:600;color:var(--muted)}
+        .inp,.sel,.txta{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:var(--rsm);background:var(--bg);color:var(--text);font-family:var(--font);font-size:.88rem;outline:none;transition:border-color .2s,box-shadow .2s}
+        body.dark .inp,body.dark .sel,body.dark .txta{background:var(--surface)}
+        .inp:focus,.sel:focus,.txta:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(26,115,232,.12)}
+        .txta{resize:vertical;min-height:84px}
+        .sel{cursor:pointer}
         /* PROGRESS */
-        .progress-wrapper { display: none; flex-direction: column; gap: 8px; margin-top: 20px; }
-        .progress-wrapper.visible { display: flex; }
-        .progress-header { display: flex; justify-content: space-between; align-items: center; }
-        .progress-label { font-size: 0.85rem; font-weight: 600; color: var(--text-main); }
-        .progress-percent { font-size: 0.85rem; color: var(--primary); font-weight: 700; }
-        .progress-bar-track { height: 8px; background: var(--border-color); border-radius: 99px; overflow: hidden; }
-        .progress-bar-fill {
-            height: 100%; width: 0%;
-            background: linear-gradient(90deg, var(--primary), var(--google-green));
-            border-radius: 99px; transition: width 0.3s ease;
-        }
-        .progress-speed { font-size: 0.78rem; color: var(--text-muted); }
-
-        /* BUTTON */
-        .upload-btn {
-            width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 14px; background: var(--primary); color: #fff; border: none;
-            border-radius: var(--radius-sm); font-family: var(--font-family);
-            font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 24px;
-            transition: background 0.2s, transform 0.15s, opacity 0.2s;
-        }
-        .upload-btn:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-2px); }
-        .upload-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
-        .upload-btn.loading { background: var(--primary-hover); pointer-events: none; }
-        .spinner {
-            width: 20px; height: 20px;
-            border: 2.5px solid rgba(255,255,255,0.4); border-top-color: #fff;
-            border-radius: 50%; animation: spin 0.7s linear infinite; display: none;
-        }
-        .spinner.visible { display: block; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
+        .prog-box{display:none;flex-direction:column;gap:7px;margin-top:18px}
+        .prog-box.show{display:flex}
+        .prog-hdr{display:flex;justify-content:space-between;align-items:center}
+        .prog-lbl{font-size:.83rem;font-weight:600}
+        .prog-pct{font-size:.83rem;font-weight:700;color:var(--primary)}
+        .prog-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden}
+        .prog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--green));border-radius:99px;transition:width .35s ease}
+        .prog-meta{font-size:.76rem;color:var(--muted)}
         /* ALERTS */
-        .alert {
-            display: none; align-items: center; gap: 12px;
-            padding: 14px 16px; border-radius: var(--radius-sm);
-            font-size: 0.9rem; font-weight: 500; margin-top: 18px;
-            animation: slideIn 0.3s ease;
-        }
-        .alert.visible { display: flex; }
-        .alert-success { background: rgba(52,168,83,0.1); border: 1px solid rgba(52,168,83,0.35); color: var(--google-green); }
-        .alert-error   { background: rgba(234,67,53,0.08); border: 1px solid rgba(234,67,53,0.3); color: var(--google-red); }
-        .alert svg { width: 20px; height: 20px; flex-shrink: 0; }
-
-        /* INFO CHIPS */
-        .info-row { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
-        .info-chip {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 0.8rem; color: var(--text-muted);
-            background: var(--bg-surface); border: 1px solid var(--border-color);
-            border-radius: 20px; padding: 5px 12px;
-        }
-        .info-chip svg { width: 14px; height: 14px; }
-        .info-chip strong { color: var(--text-main); }
-
-        /* PAUSE / CANCEL CONTROLS */
-        .ctrl-btn {
-            flex: 1; padding: 10px 16px;
-            border-radius: var(--radius-sm);
-            font-family: var(--font-family);
-            font-size: 0.9rem; font-weight: 600;
-            cursor: pointer; border: none;
-            transition: all 0.2s ease;
-        }
-        .ctrl-pause {
-            background: var(--bg-surface);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
-        .ctrl-pause:hover { background: rgba(251,188,4,0.12); border-color: var(--google-yellow); color: #b06000; }
-        .ctrl-cancel {
-            background: rgba(234,67,53,0.08);
-            color: var(--google-red);
-            border: 1px solid rgba(234,67,53,0.25);
-        }
-        .ctrl-cancel:hover { background: rgba(234,67,53,0.18); }
-
-        /* Chunk progress mini dots */
-        .chunk-dots {
-            display: flex; flex-wrap: wrap; gap: 3px;
-            margin-top: 6px;
-        }
-        .chunk-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: var(--border-color);
-            transition: background 0.2s ease;
-        }
-        .chunk-dot.done { background: var(--google-green); }
-        .chunk-dot.active { background: var(--primary); animation: pulse 0.8s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-        @media (max-width: 600px) {
-            .upload-card { padding: 24px 18px; }
-            .drop-zone { padding: 36px 16px; }
-            .page-wrapper { padding: 90px 16px 48px; }
-            .navbar { padding: 12px 16px; }
-        }
+        .alert{display:none;align-items:center;gap:10px;padding:13px 15px;border-radius:var(--rsm);font-size:.88rem;font-weight:500;margin-top:16px}
+        .alert.show{display:flex;animation:fu .25s ease}
+        .alert svg{width:18px;height:18px;flex-shrink:0}
+        .alert-ok{background:rgba(52,168,83,.1);border:1px solid rgba(52,168,83,.3);color:var(--green)}
+        .alert-err{background:rgba(234,67,53,.08);border:1px solid rgba(234,67,53,.28);color:var(--red)}
+        /* BUTTONS */
+        .up-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;padding:13px;margin-top:22px;background:var(--primary);color:#fff;border:none;border-radius:var(--rsm);font-family:var(--font);font-size:.97rem;font-weight:700;cursor:pointer;transition:background .2s,transform .15s,opacity .2s}
+        .up-btn:hover:not(:disabled){background:var(--primary-h);transform:translateY(-2px)}
+        .up-btn:disabled{opacity:.5;cursor:not-allowed}
+        .spin{width:19px;height:19px;border-radius:50%;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;animation:sp .65s linear infinite;display:none}
+        .spin.on{display:block}
+        @keyframes sp{to{transform:rotate(360deg)}}
+        .ctrl-row{display:none;gap:10px;margin-top:10px}
+        .ctrl-row.show{display:flex}
+        .ctrl{flex:1;padding:9px 14px;font-family:var(--font);font-size:.88rem;font-weight:600;border-radius:var(--rsm);cursor:pointer;transition:all .2s}
+        .ctrl-pause{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+        .ctrl-pause:hover{background:rgba(251,188,4,.12);border-color:var(--yellow)}
+        .ctrl-cancel{background:rgba(234,67,53,.08);color:var(--red);border:1px solid rgba(234,67,53,.25)}
+        .ctrl-cancel:hover{background:rgba(234,67,53,.18)}
+        /* CHIPS */
+        .chips{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap}
+        .chip{display:flex;align-items:center;gap:5px;font-size:.77rem;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 11px}
+        .chip svg{width:13px;height:13px}
+        .chip strong{color:var(--text)}
+        @media(max-width:580px){.nav{padding:12px 16px}.card{padding:22px 16px}.page{padding:88px 14px 48px}.dz{padding:34px 14px}}
     </style>
 </head>
 <body>
-
-    <nav class="navbar">
-        <a href="/" class="nav-logo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="2" width="20" height="20" rx="3"/>
-                <path d="M7 2v20M17 2v20M2 12h20M2 7h5M17 7h5M2 17h5M17 17h5"/>
-            </svg>
-            Firas Daher
+<nav class="nav">
+    <a href="/" class="nav-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M7 2v20M17 2v20M2 12h20M2 7h5M17 7h5M2 17h5M17 17h5"/></svg>
+        Firas Daher
+    </a>
+    <div class="nav-right">
+        <a href="/" class="nav-link">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            الرئيسية
         </a>
-        <div class="nav-actions">
-            <a href="/" class="nav-back">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-                الرئيسية
-            </a>
-            <button id="theme-toggle" class="theme-btn" title="تبديل الوضع">
-                <svg id="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                    <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        <button id="theme-btn" class="icon-btn" title="تبديل الوضع">
+            <svg id="ico-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg id="ico-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+    </div>
+</nav>
+
+<main class="page">
+    <div class="header">
+        <span class="badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M18 15v3H6v-3H4v3a2 2 0 002 2h12a2 2 0 002-2v-3zM7 9l1.41 1.41L11 7.83V16h2V7.83l2.59 2.58L17 9l-5-5z"/></svg> رفع ملفات</span>
+        <h1>رفع ملفات الفيديو</h1>
+        <p>ارفع ملفات المونتاج بسهولة وأمان — يدعم حتى <strong>200 MB</strong></p>
+    </div>
+
+    <div class="card">
+        <div class="dz" id="drop-zone">
+            <div class="dz-ico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary)">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
                 </svg>
-                <svg id="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                </svg>
+            </div>
+            <p class="dz-title">اسحب الملف هنا أو اضغط للاختيار</p>
+            <p class="dz-sub">الحد الأقصى <strong>200 MB</strong> — ملفات فيديو فقط</p>
+            <button class="pick-btn" id="pick-btn" type="button">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                اختر ملفاً
+            </button>
+            <input type="file" id="file-input" accept="video/*,.mp4,.mov,.avi,.mkv,.wmv,.flv,.webm,.m4v,.mxf" style="display:none">
+            <div class="fmts">
+                <span class="fmt">MP4</span><span class="fmt">MOV</span><span class="fmt">AVI</span>
+                <span class="fmt">MKV</span><span class="fmt">WMV</span><span class="fmt">FLV</span>
+                <span class="fmt">WEBM</span><span class="fmt">M4V</span><span class="fmt">MXF</span>
+            </div>
+        </div>
+
+        <div class="prev-row" id="prev-row">
+            <div class="prev-thumb">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="3"/><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/></svg>
+            </div>
+            <div class="prev-meta">
+                <div class="prev-name" id="prev-name">—</div>
+                <div class="prev-size" id="prev-size">—</div>
+            </div>
+            <button class="clear-btn" id="clear-btn" title="إزالة الملف">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
-    </nav>
 
-    <main class="page-wrapper">
-        <div class="page-header">
-            <span class="badge">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18 15v3H6v-3H4v3a2 2 0 002 2h12a2 2 0 002-2v-3zM7 9l1.41 1.41L11 7.83V16h2V7.83l2.59 2.58L17 9l-5-5z"/></svg>
-                رفع ملفات
-            </span>
-            <h1>رفع ملفات الفيديو</h1>
-            <p>ارفع ملفات الفيديو الخاصة بالمونتاج بسهولة وأمان — يدعم حتى <strong>200 MB</strong> لكل ملف</p>
-        </div>
-
-        <div class="upload-card">
-            <div class="drop-zone" id="drop-zone">
-                <div class="drop-icon" id="drop-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary)">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="17 8 12 3 7 8"/>
-                        <line x1="12" y1="3" x2="12" y2="15"/>
-                    </svg>
-                </div>
-                <p class="drop-title">اسحب الملف هنا أو اضغط للاختيار</p>
-                <p class="drop-sub">ملفات الفيديو للمونتاج — الحد الأقصى <strong>200 MB</strong></p>
-                <button class="browse-btn" type="button" onclick="document.getElementById('file-input').click()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-                    </svg>
-                    اختر ملفاً
-                </button>
-                <input type="file" id="file-input" accept="video/*,.mp4,.mov,.avi,.mkv,.wmv,.flv,.webm,.m4v,.mxf">
-                <div class="formats-row">
-                    <span class="format-tag">MP4</span><span class="format-tag">MOV</span>
-                    <span class="format-tag">AVI</span><span class="format-tag">MKV</span>
-                    <span class="format-tag">WMV</span><span class="format-tag">FLV</span>
-                    <span class="format-tag">WEBM</span><span class="format-tag">M4V</span>
-                    <span class="format-tag">MXF</span>
-                </div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="lbl" for="f-title">اسم المشروع / الفيديو *</label>
+                <input type="text" id="f-title" class="inp" placeholder="مثال: فيديو ترويجي — شركة كرواي">
             </div>
-
-            <div class="file-preview" id="file-preview">
-                <div class="file-thumb">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary)">
-                        <rect x="2" y="2" width="20" height="20" rx="3"/><polygon points="10,8 16,12 10,16"/>
-                    </svg>
-                </div>
-                <div class="file-meta">
-                    <div class="file-name" id="preview-name">-</div>
-                    <div class="file-size" id="preview-size">-</div>
-                </div>
-                <button class="remove-btn" id="remove-btn" title="إزالة الملف">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                    </svg>
-                </button>
+            <div class="form-group">
+                <label class="lbl" for="f-type">نوع المحتوى</label>
+                <select id="f-type" class="sel">
+                    <option value="">اختر النوع...</option>
+                    <option value="promo">فيديو ترويجي</option>
+                    <option value="tutorial">تعليمي / توضيحي</option>
+                    <option value="social">محتوى سوشيال ميديا</option>
+                    <option value="documentary">وثائقي</option>
+                    <option value="raw">مادة خام (Raw Footage)</option>
+                    <option value="other">أخرى</option>
+                </select>
             </div>
-
-            <div class="form-section">
-                <div class="form-group">
-                    <label class="form-label" for="video-title">اسم المشروع / الفيديو *</label>
-                    <input type="text" id="video-title" class="form-input" placeholder="مثال: فيديو ترويجي - شركة كرواي" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="video-type">نوع المحتوى</label>
-                    <select id="video-type" class="form-select">
-                        <option value="">اختر النوع...</option>
-                        <option value="promo">فيديو ترويجي</option>
-                        <option value="tutorial">تعليمي / توضيحي</option>
-                        <option value="social">محتوى سوشيال ميديا</option>
-                        <option value="documentary">وثائقي</option>
-                        <option value="raw">مادة خام (Raw Footage)</option>
-                        <option value="other">أخرى</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="video-notes">ملاحظات للمحرر</label>
-                    <textarea id="video-notes" class="form-textarea" placeholder="أضف أي تعليمات خاصة بالمونتاج، مثلاً: التركيز على المقدمة، إضافة موسيقى خلفية..."></textarea>
-                </div>
-            </div>
-
-            <div class="progress-wrapper" id="progress-wrapper">
-                <div class="progress-header">
-                    <span class="progress-label" id="progress-label">جارٍ الرفع...</span>
-                    <span class="progress-percent" id="progress-percent">0%</span>
-                </div>
-                <div class="progress-bar-track">
-                    <div class="progress-bar-fill" id="progress-fill"></div>
-                </div>
-                <span class="progress-speed" id="progress-speed"></span>
-            </div>
-
-            <div class="alert alert-success" id="alert-success">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-                </svg>
-                <span id="success-msg">تم رفع الملف بنجاح!</span>
-            </div>
-            <div class="alert alert-error" id="alert-error">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                    <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
-                </svg>
-                <span id="error-msg">حدث خطأ. يرجى المحاولة مجدداً.</span>
-            </div>
-
-            <button class="upload-btn" id="upload-btn" disabled>
-                <span class="spinner" id="btn-spinner"></span>
-                <svg id="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-                رفع الملف
-            </button>
-
-            <!-- Pause / Cancel controls (hidden until upload starts) -->
-            <div id="upload-controls" style="display:none; gap:10px; margin-top:10px;">
-                <button id="pause-btn" class="ctrl-btn ctrl-pause">⏸ إيقاف مؤقت</button>
-                <button id="cancel-btn" class="ctrl-btn ctrl-cancel">✕ إلغاء</button>
-            </div>
-
-            <div class="info-row">
-                <div class="info-chip">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    <span>ملفاتك آمنة</span>
-                </div>
-                <div class="info-chip">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    <span>الحد الأقصى: <strong>200 MB</strong></span>
-                </div>
-                <div class="info-chip">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                    <span>رفع متوازٍ بـ <strong>4 مسارات</strong></span>
-                </div>
+            <div class="form-group">
+                <label class="lbl" for="f-notes">ملاحظات للمحرر</label>
+                <textarea id="f-notes" class="txta" placeholder="أي تعليمات للمونتاج: موسيقى خلفية، قص، تأثيرات..."></textarea>
             </div>
         </div>
-    </main>
 
-    <script>
-        /* =====================================================
-           UPLOAD ENGINE CONFIG
-           ===================================================== */
-        const MAX_SIZE_B      = 200 * 1024 * 1024;   // 200 MB hard limit
-        const CHUNK_SIZE      = 5  * 1024 * 1024;    // 5 MB per chunk — sweet spot for speed
-        const PARALLEL_LIMIT  = 4;                    // concurrent chunk uploads
-        const MAX_RETRIES     = 3;                    // exponential-backoff retries per chunk
-        const RETRY_BASE_MS   = 500;                  // base retry delay (doubles each attempt)
+        <div class="prog-box" id="prog-box">
+            <div class="prog-hdr">
+                <span class="prog-lbl" id="prog-lbl">جارٍ الرفع...</span>
+                <span class="prog-pct" id="prog-pct">0%</span>
+            </div>
+            <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+            <span class="prog-meta" id="prog-meta"></span>
+        </div>
 
-        // ⚙️ PHP Backend endpoints
-        const UPLOAD_INIT_ENDPOINT   = '/api/upload/index.php?action=init';
-        const UPLOAD_CHUNK_ENDPOINT  = '/api/upload/index.php?action=chunk';
-        const UPLOAD_FINISH_ENDPOINT = '/api/upload/index.php?action=finish';
+        <div class="alert alert-ok" id="alert-ok">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span id="msg-ok">تم الرفع بنجاح!</span>
+        </div>
+        <div class="alert alert-err" id="alert-err">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            <span id="msg-err">حدث خطأ.</span>
+        </div>
 
-        const dropZone      = document.getElementById('drop-zone');
-        const fileInput     = document.getElementById('file-input');
-        const filePreview   = document.getElementById('file-preview');
-        const previewName   = document.getElementById('preview-name');
-        const previewSize   = document.getElementById('preview-size');
-        const removeBtn     = document.getElementById('remove-btn');
-        const uploadBtn     = document.getElementById('upload-btn');
-        const progressWrap  = document.getElementById('progress-wrapper');
-        const progressFill  = document.getElementById('progress-fill');
-        const progressPct   = document.getElementById('progress-percent');
-        const progressLabel = document.getElementById('progress-label');
-        const progressSpeed = document.getElementById('progress-speed');
-        const alertSuccess  = document.getElementById('alert-success');
-        const alertError    = document.getElementById('alert-error');
-        const successMsg    = document.getElementById('success-msg');
-        const errorMsg      = document.getElementById('error-msg');
-        const btnSpinner    = document.getElementById('btn-spinner');
-        const btnIcon       = document.getElementById('btn-icon');
-        const themeToggle   = document.getElementById('theme-toggle');
-        const iconSun       = document.getElementById('icon-sun');
-        const iconMoon      = document.getElementById('icon-moon');
+        <button class="up-btn" id="upload-btn" disabled>
+            <span class="spin" id="spin-el"></span>
+            <svg id="btn-ico" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            رفع الملف
+        </button>
 
-        let selectedFile      = null;
-        let uploadState      = null;   // null | 'uploading' | 'paused' | 'done' | 'error'
-        let chunksDone       = 0;
-        let totalChunks      = 0;
-        let uploadId         = null;
-        let abortControllers = [];     // one AbortController per in-flight chunk
-        let pauseRequested   = false;
-        let bytesUploaded    = 0;
-        let uploadStartTime  = null;
-        // Sliding-window speed estimator (last 6 samples)
-        const speedSamples   = [];
-        const SPEED_WINDOW   = 6;
+        <div class="ctrl-row" id="ctrl-row">
+            <button class="ctrl ctrl-pause" id="pause-btn">&#9208; إيقاف مؤقت</button>
+            <button class="ctrl ctrl-cancel" id="cancel-btn">&#x2715; إلغاء</button>
+        </div>
 
-        // Theme
-        if (localStorage.getItem('theme') === 'dark') applyDark();
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            iconSun.style.display  = isDark ? 'none'  : 'block';
-            iconMoon.style.display = isDark ? 'block' : 'none';
-        });
-        function applyDark() {
-            document.body.classList.add('dark-mode');
-            iconSun.style.display  = 'none';
-            iconMoon.style.display = 'block';
+        <div class="chips">
+            <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>ملفاتك آمنة</span></div>
+            <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>حتى <strong>200 MB</strong></span></div>
+            <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>رفع متوازٍ <strong>4 مسارات</strong></span></div>
+        </div>
+    </div>
+</main>
+
+<script>
+'use strict';
+const MAX_BYTES=200*1024*1024,CHUNK_SIZE=5*1024*1024,CONCURRENCY=4,MAX_RETRY=3,RETRY_BASE=600;
+const EP_INIT='/api/upload/index.php?action=init';
+const EP_CHUNK='/api/upload/index.php?action=chunk';
+const EP_FINISH='/api/upload/index.php?action=finish';
+
+const $=id=>document.getElementById(id);
+const dropZone=$('drop-zone'),fileInput=$('file-input'),pickBtn=$('pick-btn');
+const prevRow=$('prev-row'),prevName=$('prev-name'),prevSz=$('prev-size'),clearBtn=$('clear-btn');
+const uploadBtn=$('upload-btn'),spinEl=$('spin-el'),btnIco=$('btn-ico');
+const progBox=$('prog-box'),progLbl=$('prog-lbl'),progPct=$('prog-pct'),progFill=$('prog-fill'),progMeta=$('prog-meta');
+const alertOk=$('alert-ok'),alertErr=$('alert-err'),msgOk=$('msg-ok'),msgErr=$('msg-err');
+const ctrlRow=$('ctrl-row'),pauseBtn=$('pause-btn'),cancelBtn=$('cancel-btn');
+const themeBtn=$('theme-btn'),icoSun=$('ico-sun'),icoMoon=$('ico-moon');
+
+let file=null,uploadId=null,state='idle',totalChunks=0,doneChunks=0,bytesDone=0,startedAt=0,pauseFlag=false,queue=[],controllers=[];
+const speedBuf=[];
+
+function applyTheme(dark){document.body.classList.toggle('dark',dark);icoSun.style.display=dark?'none':'';icoMoon.style.display=dark?'':'none'}
+applyTheme(localStorage.getItem('theme')==='dark');
+themeBtn.addEventListener('click',()=>{const d=!document.body.classList.contains('dark');applyTheme(d);localStorage.setItem('theme',d?'dark':'light')});
+
+dropZone.addEventListener('dragenter',e=>{e.preventDefault();dropZone.classList.add('over')});
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('over')});
+dropZone.addEventListener('dragleave',e=>{if(!dropZone.contains(e.relatedTarget))dropZone.classList.remove('over')});
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
+dropZone.addEventListener('click',e=>{if(pickBtn.contains(e.target))return;fileInput.click()});
+pickBtn.addEventListener('click',e=>{e.stopPropagation();fileInput.click()});
+fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleFile(fileInput.files[0])});
+
+function handleFile(f){
+    clearAlerts();
+    if(f.size>MAX_BYTES){showErr('حجم الملف ('+fmt(f.size)+') يتجاوز 200 MB.');return}
+    if(!f.type.startsWith('video/')&&!/\.(mp4|mov|avi|mkv|wmv|flv|webm|m4v|mxf)$/i.test(f.name)){showErr('الرجاء اختيار ملف فيديو.');return}
+    file=f;prevName.textContent=f.name;prevSz.textContent=fmt(f.size);
+    prevRow.classList.add('show');dropZone.classList.add('ready');uploadBtn.disabled=false;resetProg()
+}
+
+clearBtn.addEventListener('click',resetAll);
+function resetAll(){abortAll();file=null;fileInput.value='';prevRow.classList.remove('show');dropZone.classList.remove('ready','over');uploadBtn.disabled=true;resetProg();clearAlerts();ctrlRow.classList.remove('show');state='idle'}
+
+uploadBtn.addEventListener('click',async()=>{
+    if(!file)return;
+    const title=$('f-title').value.trim();
+    if(!title){showErr('يرجى إدخال اسم المشروع أولاً.');$('f-title').focus();return}
+    clearAlerts();await startUpload(title)
+});
+
+async function startUpload(title){
+    totalChunks=Math.ceil(file.size/CHUNK_SIZE);doneChunks=0;bytesDone=0;startedAt=Date.now();pauseFlag=false;speedBuf.length=0;
+    queue=Array.from({length:totalChunks},(_,i)=>i);state='running';
+    setBusy(true);ctrlRow.classList.add('show');progBox.classList.add('show');progLbl.textContent='جارٍ الاتصال...';
+    try{
+        const res=await jsonPost(EP_INIT,{filename:file.name,filesize:file.size,chunks:totalChunks,title,type:$('f-type').value,notes:$('f-notes').value});
+        uploadId=res.uploadId
+    }catch(e){showErr('فشل بدء الجلسة: '+e.message);setBusy(false);ctrlRow.classList.remove('show');state='error';return}
+    progLbl.textContent='جارٍ الرفع — '+totalChunks+' جزء...';
+    await runWorkers();
+    if(state==='running'&&doneChunks===totalChunks)await finish()
+}
+
+async function runWorkers(){await Promise.all(Array.from({length:CONCURRENCY},()=>worker()))}
+
+async function worker(){
+    while(true){
+        if(pauseFlag||state!=='running')break;
+        const idx=queue.shift();if(idx===undefined)break;
+        const ok=await uploadChunk(idx);
+        if(!ok&&state==='running'){abortAll();showErr('فشل رفع جزء بعد '+MAX_RETRY+' محاولات.');setBusy(false);ctrlRow.classList.remove('show');state='error';return}
+    }
+}
+
+async function uploadChunk(idx){
+    const start=idx*CHUNK_SIZE,end=Math.min(start+CHUNK_SIZE,file.size),blob=file.slice(start,end),sz=end-start;
+    for(let a=0;a<MAX_RETRY;a++){
+        if(pauseFlag||state!=='running')return false;
+        const ac=new AbortController();controllers.push(ac);
+        try{
+            const form=new FormData();
+            form.append('uploadId',uploadId);form.append('chunkIndex',idx);form.append('totalChunks',totalChunks);form.append('chunk',blob,'chunk');
+            const t0=Date.now(),res=await fetch(EP_CHUNK,{method:'POST',body:form,signal:ac.signal}),dt=(Date.now()-t0)/1000;
+            controllers=controllers.filter(c=>c!==ac);
+            if(!res.ok)throw new Error('HTTP '+res.status);
+            doneChunks++;bytesDone+=sz;speedBuf.push(sz/dt);if(speedBuf.length>8)speedBuf.shift();renderProg();return true
+        }catch(e){
+            controllers=controllers.filter(c=>c!==ac);
+            if(e.name==='AbortError')return false;
+            if(a<MAX_RETRY-1){progLbl.textContent='إعادة محاولة الجزء '+(idx+1)+'...';await sleep(RETRY_BASE*(2**a))}
         }
+    }
+    return false
+}
 
-        // Drag & Drop
-        ['dragenter','dragover'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.add('drag-over'); }));
-        ['dragleave','dragend','drop'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.remove('drag-over'); }));
-        dropZone.addEventListener('drop', e => { if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); });
-        fileInput.addEventListener('change', () => { if (fileInput.files.length) handleFile(fileInput.files[0]); });
+async function finish(){
+    try{
+        progLbl.textContent='جارٍ دمج الأجزاء...';
+        await jsonPost(EP_FINISH,{uploadId,filename:file.name});
+        setPct(100);progLbl.textContent='اكتمل الرفع!';progMeta.textContent='تم في '+fmtT((Date.now()-startedAt)/1000);
+        state='done';setBusy(false);ctrlRow.classList.remove('show');showOk('تم رفع "'+file.name+'" بنجاح ✅')
+    }catch(e){showErr('فشل الدمج: '+e.message);setBusy(false);ctrlRow.classList.remove('show');state='error'}
+}
 
-        function handleFile(file) {
-            hideAlerts();
-            if (file.size > MAX_SIZE_B) { showError('حجم الملف (' + formatSize(file.size) + ') يتجاوز الحد المسموح به (200 MB).'); return; }
-            const isVideo = file.type.startsWith('video/') || /\.(mp4|mov|avi|mkv|wmv|flv|webm|m4v|mxf)$/i.test(file.name);
-            if (!isVideo) { showError('الملف المحدد ليس فيديو. يرجى اختيار ملف فيديو صالح.'); return; }
-            selectedFile = file;
-            previewName.textContent = file.name;
-            previewSize.textContent = formatSize(file.size);
-            filePreview.classList.add('visible');
-            dropZone.classList.add('has-file');
-            uploadBtn.disabled = false;
-            resetProgress();
-        }
+pauseBtn.addEventListener('click',()=>{
+    if(state==='running'){pauseFlag=true;state='paused';abortAll();pauseBtn.textContent='▶ متابعة';progLbl.textContent='متوقف مؤقتاً...'}
+    else if(state==='paused'){pauseFlag=false;state='running';pauseBtn.textContent='⏸ إيقاف مؤقت';runWorkers().then(()=>{if(state==='running'&&doneChunks===totalChunks)finish()})}
+});
+cancelBtn.addEventListener('click',()=>{abortAll();state='idle';pauseBtn.textContent='⏸ إيقاف مؤقت';setBusy(false);ctrlRow.classList.remove('show');resetProg();showErr('تم إلغاء الرفع.')});
+function abortAll(){controllers.forEach(c=>{try{c.abort()}catch(_){}});controllers=[];pauseFlag=false}
 
-        removeBtn.addEventListener('click', () => {
-            cancelUpload();
-            selectedFile = null; fileInput.value = '';
-            filePreview.classList.remove('visible');
-            dropZone.classList.remove('has-file');
-            uploadBtn.disabled = true;
-            resetProgress(); hideAlerts();
-            showControls(false);
-        });
-
-        /* --------------------------------------------------
-           START UPLOAD — entry point
-        -------------------------------------------------- */
-        uploadBtn.addEventListener('click', async () => {
-            if (!selectedFile) return;
-            const title = document.getElementById('video-title').value.trim();
-            if (!title) {
-                showError('يرجى إدخال اسم المشروع / الفيديو.');
-                document.getElementById('video-title').focus();
-                return;
-            }
-            hideAlerts();
-            await startChunkedUpload(selectedFile, title);
-        });
-
-        /* --------------------------------------------------
-           PAUSE / RESUME / CANCEL
-        -------------------------------------------------- */
-        document.getElementById('pause-btn').addEventListener('click', () => {
-            if (uploadState === 'uploading') {
-                pauseRequested = true;
-                uploadState = 'paused';
-                abortControllers.forEach(ac => ac.abort());
-                abortControllers = [];
-                document.getElementById('pause-btn').textContent = '▶ متابعة';
-                progressLabel.textContent = 'متوقف مؤقتاً...';
-            } else if (uploadState === 'paused') {
-                pauseRequested = false;
-                uploadState = 'uploading';
-                document.getElementById('pause-btn').textContent = '⏸ إيقاف مؤقت';
-                resumeChunkedUpload();
-            }
-        });
-
-        document.getElementById('cancel-btn').addEventListener('click', () => {
-            cancelUpload();
-            showError('تم إلغاء عملية الرفع.');
-            resetProgress();
-            showControls(false);
-            setUploading(false);
-        });
-
-        function cancelUpload() {
-            abortControllers.forEach(ac => ac.abort());
-            abortControllers = [];
-            uploadState = null;
-            pauseRequested = false;
-            chunksDone = 0;
-            bytesUploaded = 0;
-            speedSamples.length = 0;
-        }
-
-        /* --------------------------------------------------
-           CHUNKED UPLOAD ENGINE
-        -------------------------------------------------- */
-        let pendingChunkQueue = [];   // indices of chunks not yet uploaded
-        let activeWorkers     = 0;
-
-        async function startChunkedUpload(file, title) {
-            totalChunks    = Math.ceil(file.size / CHUNK_SIZE);
-            chunksDone     = 0;
-            bytesUploaded  = 0;
-            uploadStartTime = Date.now();
-            uploadState    = 'uploading';
-            pauseRequested = false;
-            speedSamples.length = 0;
-            pendingChunkQueue   = Array.from({ length: totalChunks }, (_, i) => i);
-
-            setUploading(true);
-            showControls(true);
-            progressWrap.classList.add('visible');
-            progressLabel.textContent = 'جارٍ الرفع — ' + totalChunks + ' أجزاء بالتوازي...';
-
-            // 1. Init session on server (get uploadId)
-            try {
-                const initRes = await fetchJSON('POST', UPLOAD_INIT_ENDPOINT, {
-                    filename : file.name,
-                    filesize : file.size,
-                    chunks   : totalChunks,
-                    title    : title,
-                    type     : document.getElementById('video-type').value,
-                    notes    : document.getElementById('video-notes').value
-                });
-                uploadId = initRes.uploadId;
-            } catch (e) {
-                showError('فشل بدء جلسة الرفع: ' + e.message);
-                setUploading(false); showControls(false); return;
-            }
-
-            // 2. Pump parallel workers
-            await pumpWorkers(file);
-        }
-
-        async function resumeChunkedUpload() {
-            if (!selectedFile) return;
-            await pumpWorkers(selectedFile);
-        }
-
-        async function pumpWorkers(file) {
-            // Launch up to PARALLEL_LIMIT workers simultaneously
-            const workers = [];
-            for (let i = 0; i < PARALLEL_LIMIT; i++) {
-                workers.push(worker(file));
-            }
-            await Promise.all(workers);
-
-            // All workers done — if no pause/cancel, finalize
-            if (uploadState === 'uploading' && chunksDone === totalChunks) {
-                await finalizeUpload();
-            }
-        }
-
-        async function worker(file) {
-            while (true) {
-                if (pauseRequested || uploadState !== 'uploading') break;
-                const chunkIndex = pendingChunkQueue.shift();
-                if (chunkIndex === undefined) break;   // queue exhausted
-
-                const success = await uploadChunkWithRetry(file, chunkIndex);
-                if (!success) {
-                    // Unrecoverable — abort everything
-                    cancelUpload();
-                    showError('فشل رفع جزء من الملف بعد ' + MAX_RETRIES + ' محاولات. يرجى المحاولة مجدداً.');
-                    setUploading(false); showControls(false);
-                    return;
-                }
-            }
-        }
-
-        async function uploadChunkWithRetry(file, index) {
-            const start = index * CHUNK_SIZE;
-            const end   = Math.min(start + CHUNK_SIZE, file.size);
-            const blob  = file.slice(start, end);
-            const chunkBytes = end - start;
-
-            for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
-                if (pauseRequested || uploadState !== 'uploading') return false;
-
-                const ac = new AbortController();
-                abortControllers.push(ac);
-
-                try {
-                    const form = new FormData();
-                    form.append('uploadId',   uploadId);
-                    form.append('chunkIndex', index);
-                    form.append('totalChunks', totalChunks);
-                    form.append('chunk',       blob, 'chunk');
-
-                    const t0 = Date.now();
-                    const res = await fetch(UPLOAD_CHUNK_ENDPOINT, {
-                        method: 'POST',
-                        body:   form,
-                        signal: ac.signal
-                    });
-                    const elapsed = (Date.now() - t0) / 1000;
-
-                    // Remove this controller
-                    abortControllers = abortControllers.filter(x => x !== ac);
-
-                    if (!res.ok) throw new Error('HTTP ' + res.status);
-
-                    // Update progress
-                    chunksDone++;
-                    bytesUploaded += chunkBytes;
-                    recordSpeedSample(chunkBytes, elapsed);
-                    renderProgress();
-                    return true;
-
-                } catch (err) {
-                    abortControllers = abortControllers.filter(x => x !== ac);
-                    if (err.name === 'AbortError') return false;  // paused/cancelled
-                    if (attempt < MAX_RETRIES - 1) {
-                        const delay = RETRY_BASE_MS * Math.pow(2, attempt);
-                        progressLabel.textContent = `إعادة المحاولة للجزء ${index + 1}… (${attempt + 2}/${MAX_RETRIES})`;
-                        await sleep(delay);
-                    }
-                }
-            }
-            return false;  // all retries failed
-        }
-
-        async function finalizeUpload() {
-            try {
-                progressLabel.textContent = 'جارٍ دمج الأجزاء...';
-                await fetchJSON('POST', UPLOAD_FINISH_ENDPOINT, { uploadId, filename: selectedFile.name });
-                updateProgress(100);
-                uploadState = 'done';
-                setUploading(false);
-                showControls(false);
-                showSuccess('تم رفع "' + selectedFile.name + '" بنجاح! ✅');
-            } catch (e) {
-                showError('تم رفع الملف لكن فشل إتمام العملية: ' + e.message);
-                setUploading(false); showControls(false);
-            }
-        }
-
-        /* --------------------------------------------------
-           SPEED & PROGRESS
-        -------------------------------------------------- */
-        function recordSpeedSample(bytes, seconds) {
-            speedSamples.push(bytes / seconds);
-            if (speedSamples.length > SPEED_WINDOW) speedSamples.shift();
-        }
-
-        function smoothedSpeed() {
-            if (!speedSamples.length) return 0;
-            return speedSamples.reduce((a, b) => a + b, 0) / speedSamples.length;
-        }
-
-        function renderProgress() {
-            const pct = Math.round((chunksDone / totalChunks) * 100);
-            progressWrap.classList.add('visible');
-            progressFill.style.width = pct + '%';
-            progressPct.textContent  = pct + '%';
-
-            const speed     = smoothedSpeed();
-            const remaining = speed > 0 ? (selectedFile.size - bytesUploaded) / speed : 0;
-            progressLabel.textContent = 'رفع ' + chunksDone + ' من ' + totalChunks + ' جزء';
-            progressSpeed.textContent = speed > 0
-                ? 'السرعة: ' + formatSize(speed) + '/ث  —  المتبقي: ' + formatTime(remaining)
-                   + '  —  تم: ' + formatSize(bytesUploaded) + ' / ' + formatSize(selectedFile.size)
-                : '';
-        }
-
-        function updateProgress(pct) {
-            progressFill.style.width = pct + '%';
-            progressPct.textContent  = pct + '%';
-            if (pct === 100) {
-                progressLabel.textContent = 'اكتمل الرفع!';
-                progressSpeed.textContent = 'تم بنجاح في ' + formatTime((Date.now() - uploadStartTime) / 1000);
-            }
-        }
-
-        function resetProgress() {
-            progressWrap.classList.remove('visible');
-            progressFill.style.width = '0%';
-            progressPct.textContent  = '0%';
-            progressLabel.textContent = 'جارٍ الرفع...';
-            progressSpeed.textContent = '';
-        }
-
-        /* --------------------------------------------------
-           UI HELPERS
-        -------------------------------------------------- */
-        function setUploading(state) {
-            uploadBtn.disabled = state;
-            uploadBtn.classList.toggle('loading', state);
-            btnSpinner.classList.toggle('visible', state);
-            btnIcon.style.display = state ? 'none' : 'block';
-        }
-
-        function showControls(show) {
-            document.getElementById('upload-controls').style.display = show ? 'flex' : 'none';
-        }
-
-        function showSuccess(msg) { successMsg.textContent = msg; alertSuccess.classList.add('visible'); alertError.classList.remove('visible'); }
-        function showError(msg)   { errorMsg.textContent = msg; alertError.classList.add('visible'); alertSuccess.classList.remove('visible'); }
-        function hideAlerts()     { alertSuccess.classList.remove('visible'); alertError.classList.remove('visible'); }
-
-        /* --------------------------------------------------
-           UTILITIES
-        -------------------------------------------------- */
-        async function fetchJSON(method, url, body) {
-            const res = await fetch(url, {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            });
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            return res.json();
-        }
-
-        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-        function formatSize(bytes) {
-            if (bytes >= 1024*1024) return (bytes/(1024*1024)).toFixed(1)+' MB';
-            if (bytes >= 1024)      return (bytes/1024).toFixed(0)+' KB';
-            return bytes+' B';
-        }
-        function formatTime(sec) {
-            if (sec < 60)   return Math.round(sec)+' ث';
-            if (sec < 3600) return Math.round(sec/60)+' د';
-            return Math.round(sec/3600)+' س';
-        }
-    </script>
+function renderProg(){const p=Math.round(doneChunks/totalChunks*100);setPct(p);const spd=speedBuf.length?speedBuf.reduce((a,b)=>a+b,0)/speedBuf.length:0,left=spd>0?(file.size-bytesDone)/spd:0;progLbl.textContent='رفع '+doneChunks+' من '+totalChunks+' جزء';progMeta.textContent=spd>0?fmt(spd)+'/ث — متبقي: '+fmtT(left)+' — '+fmt(bytesDone)+' / '+fmt(file.size):''}
+function setPct(p){progFill.style.width=p+'%';progPct.textContent=p+'%'}
+function resetProg(){progBox.classList.remove('show');setPct(0);progLbl.textContent='جارٍ الرفع...';progMeta.textContent=''}
+function setBusy(on){uploadBtn.disabled=on;spinEl.classList.toggle('on',on);btnIco.style.display=on?'none':''}
+function showOk(m){msgOk.textContent=m;alertOk.classList.add('show');alertErr.classList.remove('show')}
+function showErr(m){msgErr.textContent=m;alertErr.classList.add('show');alertOk.classList.remove('show')}
+function clearAlerts(){alertOk.classList.remove('show');alertErr.classList.remove('show')}
+async function jsonPost(url,data){const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();if(j.ok===false)throw new Error(j.error||'Server error');return j}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function fmt(b){if(b>=1048576)return(b/1048576).toFixed(1)+' MB';if(b>=1024)return Math.round(b/1024)+' KB';return b+' B'}
+function fmtT(s){if(s<60)return Math.round(s)+' ث';if(s<3600)return Math.round(s/60)+' د';return Math.round(s/3600)+' س'}
+</script>
 </body>
 </html>
